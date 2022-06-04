@@ -1,6 +1,7 @@
 package SearchEngineApp;
 
 import SearchEngineApp.utils.HibernateSessionFactoryUtil;
+import SearchEngineApp.utils.IndexPagesUtil;
 import SearchEngineApp.utils.ParseSiteUtil;
 
 import java.util.Scanner;
@@ -32,7 +33,8 @@ public class Main
                     case ("1"):
                         System.out.println("Введите адрес сайта для начала работы: ");
                         String url = scanner.nextLine().trim();
-                        ParseSiteUtil.startParse(url);
+                        ParseSiteUtil.startParse(removeSlash(url));
+                        IndexPagesUtil.startIndexing(removeSlash(url));
                         break;
                     case ("10"):
                         stop = true;
@@ -50,6 +52,12 @@ public class Main
         } catch (Exception iex) {
             System.out.println("Ошибка : " + iex.getMessage());
         }
+    }
 
+    private static String removeSlash (String string) {
+        if (string.charAt(string.length()-1) == '/') {
+            string = string.substring(0,string.length()-1);
+        }
+        return string;
     }
 }

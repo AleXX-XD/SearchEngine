@@ -20,6 +20,9 @@
         <property name="hbm2ddl.auto">update</property>
 
         <mapping class="SearchEngineApp.models.WebPage"/>
+        <mapping class="SearchEngineApp.models.Field"/>
+        <mapping class="SearchEngineApp.models.Index"/>
+        <mapping class="SearchEngineApp.models.Lemma"/>
 
     </session-factory>
 </hibernate-configuration>

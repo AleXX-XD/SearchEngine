@@ -1,30 +1,30 @@
 package SearchEngineApp.dao;
 
-import SearchEngineApp.models.WebPage;
+import SearchEngineApp.models.Lemma;
 import SearchEngineApp.utils.HibernateSessionFactoryUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import java.util.List;
 
-public class WebPageDao
+public class LemmaDao
 {
-    public void save(WebPage webPage) {
+    public void save(Lemma lemma) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        session.save(webPage);
+        session.save(lemma);
         transaction.commit();
         session.close();
     }
 
-    public List<WebPage> getAll() {
+    public Lemma get(String lemmaName) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        Query<WebPage> query = session.createQuery("from WebPage where code = :code");
-        query.setParameter("code", 200);
-        List<WebPage> list = query.getResultList();
+        Query<Lemma> query = session.createQuery("from Lemma where lemma = :lemma");
+        query.setParameter("lemma", lemmaName);
+        query.setMaxResults(1);
+        Lemma lemma = query.uniqueResult();
         transaction.commit();
         session.close();
-        return list;
+        return lemma;
     }
 }
