@@ -32,6 +32,8 @@ public class WebPage implements Serializable
         urlList.add(string);
     }
 
+    public  WebPage() {}
+
     public WebPage(String path) {
         this.path = path;
     }

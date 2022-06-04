@@ -21,7 +21,7 @@ public class ParseSiteUtil
     private static CopyOnWriteArraySet<WebPage> pageData= new CopyOnWriteArraySet<>();
 
     public static void startParse(String urlAdress) {
-        url = removeSlash(urlAdress);
+        url = urlAdress;
         long startTime = System.currentTimeMillis();
 
         System.out.println(">>> Запись карты сайта в БД");
@@ -110,13 +110,6 @@ public class ParseSiteUtil
         return url + link;
     }
 
-    private static String removeSlash (String string) {
-        if (string.charAt(string.length()-1) == '/') {
-            string = string.substring(0,string.length()-1);
-        }
-        return string;
-    }
-
     private static boolean isRelevant (String string) {
         Pattern filter1 = Pattern.compile(".*/\\S+\\.(x?html?|php|jsp)$");
         Pattern filter2 = Pattern.compile(".*/[^.$&?\\s]*$");
@@ -127,5 +120,4 @@ public class ParseSiteUtil
             return false;
         }
     }
-
 }
