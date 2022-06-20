@@ -3,6 +3,7 @@ package SearchEngineApp;
 import SearchEngineApp.utils.HibernateSessionFactoryUtil;
 import SearchEngineApp.utils.IndexPagesUtil;
 import SearchEngineApp.utils.ParseSiteUtil;
+import SearchEngineApp.utils.SearchTextUtil;
 
 import java.util.Scanner;
 
@@ -20,21 +21,23 @@ public class Main
             System.out.println("Укажите номер метода :");
             boolean stop = false;
             do {
-                System.out.println("0. Обнулить все таблицы\n" +
-                        "1. Создание карты сайта и запись ее в БД\n" +
+                System.out.println("1. Создание карты сайта и запись ее в БД\n" +
+                        "2. Поиск по запросу\n" +
                         "10 Завершить программу");
                 Scanner scanner = new Scanner(System.in);
                 String command = scanner.nextLine().trim();
 
                 switch (command) {
-                    case ("0"):
-                        System.out.println("ХЗ надо или нет");
-                        break;
                     case ("1"):
                         System.out.println("Введите адрес сайта для начала работы: ");
                         String url = scanner.nextLine().trim();
                         ParseSiteUtil.startParse(removeSlash(url));
                         IndexPagesUtil.startIndexing(removeSlash(url));
+                        break;
+                    case ("2"):
+                        System.out.println("Введите текст для поиска: ");
+                        String text = scanner.nextLine().trim();
+                        SearchTextUtil.startSearch(text);
                         break;
                     case ("10"):
                         stop = true;
@@ -50,7 +53,7 @@ public class Main
             System.out.println("Программа завершена!");
             System.out.println("******************************************");
         } catch (Exception iex) {
-            System.out.println("Ошибка : " + iex.getMessage());
+            iex.printStackTrace();
         }
     }
 

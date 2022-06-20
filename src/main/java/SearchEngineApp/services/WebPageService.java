@@ -18,4 +18,8 @@ public class WebPageService
     public List<WebPage> getAllWebPages() {
         return webPageDao.getAll();
     }
+
+    public WebPage getPage(int pageId) {
+        return webPageDao.get(pageId);
+    }
 }

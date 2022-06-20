@@ -1,10 +1,14 @@
 package SearchEngineApp.dao;
 
+import SearchEngineApp.models.Index;
 import SearchEngineApp.models.Lemma;
 import SearchEngineApp.utils.HibernateSessionFactoryUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LemmaDao
 {

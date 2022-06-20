@@ -3,6 +3,8 @@ package SearchEngineApp.services;
 import SearchEngineApp.dao.IndexDao;
 import SearchEngineApp.models.Index;
 
+import java.util.List;
+
 public class IndexService
 {
     private IndexDao indexDao = new IndexDao();
@@ -19,5 +21,9 @@ public class IndexService
 
     public void updateIndex(Index index) {
         indexDao.update(index);
+    }
+
+    public List<Integer> getIndex(int lemmaId) {
+        return indexDao.get(lemmaId);
     }
 }

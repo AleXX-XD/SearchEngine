@@ -44,7 +44,7 @@ public class IndexPagesUtil
                     "Затраченное время = " + (System.currentTimeMillis() - startTime) / 1000 + " сек");
 
         } catch (Exception iex) {
-            System.out.println("Ошибка 2 : " + iex.getMessage());
+            iex.printStackTrace();
         }
     }
 
@@ -59,7 +59,7 @@ public class IndexPagesUtil
             Document doc = Jsoup.parse(webPage.getContent());
             for (Field field : fieldList) {
                 Elements el = doc.getElementsByTag(field.getSelector());
-                for (Map.Entry<String, Integer> entry : CreateLemmasUtil.getLemmas(el.eachText().get(0)).entrySet()) {
+                for (Map.Entry<String, Integer> entry : CreateLemmasUtil.createLemmas(el.eachText().get(0)).entrySet()) {
                     if (!lemmaList.contains(entry.getKey())) {
                         lemmaList.add(entry.getKey());
                         Lemma lemma = new Lemma(entry.getKey(), 1);
@@ -76,7 +76,7 @@ public class IndexPagesUtil
                 }
             }
         } catch (Exception iex) {
-            System.out.println("Ошибка 3: " + iex.getMessage());
+            iex.printStackTrace();
         }
     }
 
