@@ -6,6 +6,9 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class IndexDao
 {
     public void save(Index index) {
@@ -27,6 +30,21 @@ public class IndexDao
         transaction.commit();
         session.close();
         return index;
+    }
+
+    public List<Integer> get(int idLemma) {
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        Query<Index> query = session.createQuery("from Index where lemmaId = :lemmaId");
+        query.setParameter("lemmaId", idLemma);
+        List<Index> indexes = query.getResultList();
+        transaction.commit();
+        session.close();
+        List<Integer> pages = new ArrayList<>();
+        for(Index index : indexes) {
+            pages.add(index.getPageId());
+        }
+        return pages;
     }
 
     public void update(Index index) {

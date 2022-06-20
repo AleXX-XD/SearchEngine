@@ -9,3 +9,8 @@
 * SE-3: Implement a site page indexing system — a system that
   will allow you to count the words found on the site pages and further determine the most
   relevant pages by a search query.
+
+## 0.4.0-SNAPSHOT
+* SE-4: Implemented an information search engine using the created
+  search index.
+* Added the ability to search for queries with Russian and English words

@@ -3,6 +3,8 @@ package SearchEngineApp.services;
 import SearchEngineApp.dao.LemmaDao;
 import SearchEngineApp.models.Lemma;
 
+import java.util.List;
+
 public class LemmaService
 {
     private LemmaDao lemmaDao = new LemmaDao();
@@ -16,4 +18,5 @@ public class LemmaService
     public Lemma getLemma(String lemma) {
         return lemmaDao.get(lemma);
     }
+
 }

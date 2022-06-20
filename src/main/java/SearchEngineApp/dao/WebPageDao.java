@@ -27,4 +27,16 @@ public class WebPageDao
         session.close();
         return list;
     }
+
+    public WebPage get(int idPage) {
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        Query<WebPage> query = session.createQuery("from WebPage where id = :id");
+        query.setParameter("id", idPage);
+        query.setMaxResults(1);
+        WebPage webPage = query.uniqueResult();
+        transaction.commit();
+        session.close();
+        return webPage;
+    }
 }
