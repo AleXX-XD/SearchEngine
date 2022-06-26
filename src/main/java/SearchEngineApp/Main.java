@@ -11,6 +11,7 @@ public class Main
 {
     /*
     https://www.svetlovka.ru/  http://www.playback.ru/  http://radiomv.ru/  https://et-cetera.ru/mobile/
+    https://dombulgakova.ru/
     https://dimonvideo.ru/   - большой
     https://volochek.life/   - не доступен
     */
