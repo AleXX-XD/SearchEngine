@@ -59,7 +59,7 @@ public class IndexPagesUtil
             Document doc = Jsoup.parse(webPage.getContent());
             for (Field field : fieldList) {
                 Elements el = doc.getElementsByTag(field.getSelector());
-                for (Map.Entry<String, Integer> entry : CreateLemmasUtil.createLemmas(el.eachText().get(0)).entrySet()) {
+                for (Map.Entry<String, Integer> entry : CreateLemmasUtil.createLemmasWithCount(el.eachText().get(0)).entrySet()) {
                     if (!lemmaList.contains(entry.getKey())) {
                         lemmaList.add(entry.getKey());
                         Lemma lemma = new Lemma(entry.getKey(), 1);

@@ -14,3 +14,6 @@
 * SE-4: Implemented an information search engine using the created
   search index.
 * Added the ability to search for queries with Russian and English words
+
+* ## 0.4.1-SNAPSHOT
+* Implemented the output of a text fragment with found matches highlighted with the tag <b>...</b>
