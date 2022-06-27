@@ -17,3 +17,6 @@
 
 * ## 0.4.1-SNAPSHOT
 * Implemented the output of a text fragment with found matches highlighted with the tag <b>...</b>
+
+* ## 0.4.2-SNAPSHOT
+* Reduced the number of queries to the database during the search query. The search time in decreased 2 times
