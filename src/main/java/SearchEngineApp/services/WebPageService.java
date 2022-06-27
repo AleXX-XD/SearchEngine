@@ -19,6 +19,10 @@ public class WebPageService
         return webPageDao.getAll();
     }
 
+    public List<WebPage> getAllWebPages(List<Integer> pageList) {
+        return webPageDao.getAll(pageList);
+    }
+
     public WebPage getPage(int pageId) {
         return webPageDao.get(pageId);
     }

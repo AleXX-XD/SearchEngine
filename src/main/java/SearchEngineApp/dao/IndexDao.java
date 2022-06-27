@@ -1,11 +1,17 @@
 package SearchEngineApp.dao;
 
 import SearchEngineApp.models.Index;
+import SearchEngineApp.models.Lemma;
 import SearchEngineApp.utils.HibernateSessionFactoryUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.persister.entity.Joinable;
 import org.hibernate.query.Query;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +38,19 @@ public class IndexDao
         return index;
     }
 
-    public List<Integer> get(int idLemma) {
+    public List<Index> getIndexes(Lemma lemma, List<Integer> pageList) {
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        Query<Index> query = session.createQuery("from Index where lemmaId = :lemmaId AND pageId IN (:pageList)");
+        query.setParameter("lemmaId", lemma.getId());
+        query.setParameterList("pageList", pageList);
+        List<Index> indexes = query.getResultList();
+        transaction.commit();
+        session.close();
+        return indexes;
+    }
+
+    public List<Integer> getPages(int idLemma) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         Query<Index> query = session.createQuery("from Index where lemmaId = :lemmaId");

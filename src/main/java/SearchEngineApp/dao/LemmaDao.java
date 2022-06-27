@@ -31,4 +31,15 @@ public class LemmaDao
         session.close();
         return lemma;
     }
+
+    public List<Lemma> getLemmas(List<String> nameList) {
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        Query<Lemma> query = session.createQuery("from Lemma where lemma IN (:lemmaList)");
+        query.setParameterList("lemmaList", nameList);
+        List<Lemma> lemmaList = query.getResultList();
+        transaction.commit();
+        session.close();
+        return lemmaList;
+    }
 }

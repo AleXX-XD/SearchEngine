@@ -3,6 +3,7 @@ package SearchEngineApp.utils;
 import SearchEngineApp.models.Index;
 import SearchEngineApp.models.Lemma;
 import SearchEngineApp.models.SearchPage;
+import SearchEngineApp.models.WebPage;
 import SearchEngineApp.services.IndexService;
 import SearchEngineApp.services.LemmaService;
 import SearchEngineApp.services.WebPageService;
@@ -15,32 +16,42 @@ import java.util.*;
 public class SearchTextUtil {
 
     public static void startSearch(String text) throws IOException {
+        long startTime = System.currentTimeMillis();
         List<Lemma> lemmas = getLemmas(text);
         List<Integer> pages = getPages(lemmas);
+
+
         List<SearchPage> searchPages = getSearchPages(lemmas, pages, text);
 
+        System.out.println("Найденные страницы (" + searchPages.size() + " стр.) : ");
         for (SearchPage searchPage : searchPages) {
-            System.out.println("Найденные страницы : ");
             System.out.println("URL : " + searchPage.getWebPage().getPath() + "\n"
                     + "Заголовок : " + searchPage.getTitle() + "\n"
                     + "Фрагмент текста : " + searchPage.getSnippet() + "\n"
-                    + "Релевантность : " + searchPage.getRelevance());
+                    + "Релевантность : " + searchPage.getRelevance() + "\n");
         }
+        System.out.println("Затраченное время на поиск = " + (System.currentTimeMillis() - startTime) / 1000 + "сек.");
     }
 
     private static List<SearchPage> getSearchPages (List<Lemma> searchLemmas, List<Integer> searchPages, String searchText) throws IOException {
         IndexService indexService = new IndexService();
         WebPageService webPageService = new WebPageService();
         List<SearchPage> searchPageList = new ArrayList<>();
+        List<Index> indexList = indexService.getIndexes(searchLemmas.get(searchLemmas.size()-1), searchPages);
+        List<WebPage> webPageList = webPageService.getAllWebPages(searchPages);
+
         float maxRelevance = 0;
-        for (int pageId : searchPages) {
+        for (WebPage page : webPageList) {
             float rank = 0;
             for (Lemma lemma : searchLemmas) {
-                Index index = indexService.getIndex(lemma.getId(), pageId);
-                rank += index.getRank();
+                for(Index index: indexList) {
+                    if(index.getPageId() == page.getId() && index.getLemmaId() == lemma.getId()) {
+                        rank += index.getRank();
+                    }
+                }
             }
             SearchPage searchPage = new SearchPage();
-            searchPage.setWebPage(webPageService.getPage(pageId));
+            searchPage.setWebPage(page);
             searchPage.setAbsoluteRelevance(rank);
 
             Document doc = Jsoup.parse(searchPage.getWebPage().getContent());
@@ -78,11 +89,15 @@ public class SearchTextUtil {
     private static List<Lemma> getLemmas (String text) throws IOException {
         LemmaService lemmaService = new LemmaService();
         List<Lemma> searchLemmas = new ArrayList<>();
+        List<String> lemmaNames = new ArrayList<>();
 
         HashMap<String,Integer> map = CreateLemmasUtil.createLemmasWithCount(text);
         if(map.size() > 0) {
-            for (Map.Entry<String, Integer> entry : CreateLemmasUtil.createLemmasWithCount(text).entrySet()) {
-                Lemma lemma = lemmaService.getLemma(entry.getKey());
+            for(Map.Entry<String, Integer> entry : map.entrySet()) {
+                lemmaNames.add(entry.getKey());
+            }
+            List<Lemma> lemmaList = lemmaService.getLemmas(lemmaNames);
+            for (Lemma lemma: lemmaList) {
                 if (lemma == null) {
                     searchLemmas = null;
                     break;
@@ -113,7 +128,7 @@ public class SearchTextUtil {
 
         if (searchLemmas!=null) {
             for (Lemma lemma : searchLemmas) {
-                List<Integer> pages = indexService.getIndex(lemma.getId());
+                List<Integer> pages = indexService.getPages(lemma.getId());
                 if (searchPages.isEmpty()) {
                     searchPages.addAll(pages);
                 } else {
@@ -130,25 +145,9 @@ public class SearchTextUtil {
     }
 
     private static String getSnippet (String searchText, String mainText) throws IOException {
-
-        System.out.println("Исходный текст:\n" + mainText);
-
         String[] textArray = mainText.split("(?!^)\\b");
         TreeMap<Integer,List<String>> lemmasIndexes = CreateLemmasUtil.getIndexLemmas(textArray);
         List<List<String>> lemmasFromText = CreateLemmasUtil.createLemmas(searchText);
-
-        //TODO: отслеживание действий в консоли. Убрать после доработки
-        for (int i = 0; i < textArray.length; i++) {
-            System.out.println("Элемент[" + i + "] - " + textArray[i]);
-        }
-        System.out.println("ЛЕММЫ :");
-        for(Map.Entry<Integer,List<String>> entry : lemmasIndexes.entrySet()) {
-            System.out.print(entry.getKey() + " -");
-            for(String string : entry.getValue()) {
-                System.out.print(" " + string);
-            }
-            System.out.print("\n");
-        }
 
         List<Integer> indexes = new ArrayList<>();
         for(List<String> lemmasSearch : lemmasFromText) {
@@ -161,11 +160,6 @@ public class SearchTextUtil {
         StringBuilder builder = new StringBuilder();
         if(indexes.size() > 0) {
             Collections.sort(indexes);
-
-            //TODO: отслеживание действий в консоли. Убрать после доработки
-            System.out.println("Indexes: ");
-            indexes.forEach(System.out::println);
-
             TreeMap<Integer, Integer> startEnd = getStartEndIndexes(indexes);
             for (Map.Entry<Integer,Integer> entry : startEnd.entrySet()) {
                 builder.append(getBoldText(entry.getKey(), entry.getValue(), textArray, indexes));
@@ -187,7 +181,7 @@ public class SearchTextUtil {
                 end = indexes.get(i);
             }
             if (i + 1 < indexes.size()) {
-                if (indexes.get(i + 1) - indexes.get(i) <= 20) {
+                if (indexes.get(i + 1) - indexes.get(i) <= 30) {
                     end = indexes.get(i + 1);
                 }
                 else {
@@ -208,16 +202,14 @@ public class SearchTextUtil {
         int startIndex = Math.max(start - 30, 0);
         int endIndex = Math.min(end + 20, stringArray.length);
         for (int i = start - 1; i > startIndex; i--) {
-            if (stringArray[i].matches("[\\p{Punct}\\s]+") && stringArray[i + 1].matches("[A-ZА-Я][a-zа-я]*")) {
+            if (stringArray[i].matches("[.!?;>\"«»\\-_–]+\\s*") && stringArray[i + 1].matches("^[A-ZА-ЯЁ][a-zа-яё]*")) {
                 startIndex = i + 1;
-                System.out.println("startIndex = " + startIndex);
                 break;
             }
         }
         for (int i = end + 1; i < endIndex; i++) {
-            if (stringArray[i].matches(".*\\.\\s")){
-                endIndex = i-1;
-                System.out.println("endIndex = " + endIndex);
+            if (stringArray[i].matches(".*\\.\\s*") && !stringArray[i+1].matches("[а-яё]")){
+                endIndex = i + 1;
                 break;
             }
         }
@@ -229,6 +221,9 @@ public class SearchTextUtil {
             }
         }
 
+        if(startIndex == start - 30) {
+            builder.append("...");
+        }
         for(Integer index : indexlist) {
             for (int i = startIndex; i < index; i++) {
                 builder.append(stringArray[i]);
@@ -242,12 +237,8 @@ public class SearchTextUtil {
             builder.append(stringArray[i]);
         }
         if(endIndex == end + 20) {
-            builder.append(".... ");
+            builder.append("... ");
         }
-        else {
-            builder.append(". ");
-        }
-
         return builder.toString();
     }
 
