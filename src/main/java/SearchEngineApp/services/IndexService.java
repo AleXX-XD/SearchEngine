@@ -2,6 +2,7 @@ package SearchEngineApp.services;
 
 import SearchEngineApp.dao.IndexDao;
 import SearchEngineApp.models.Index;
+import SearchEngineApp.models.Lemma;
 
 import java.util.List;
 
@@ -23,7 +24,11 @@ public class IndexService
         indexDao.update(index);
     }
 
-    public List<Integer> getIndex(int lemmaId) {
-        return indexDao.get(lemmaId);
+    public List<Integer> getPages(int lemmaId) {
+        return indexDao.getPages(lemmaId);
+    }
+
+    public List<Index> getIndexes(Lemma lemma, List<Integer> pageList) {
+        return indexDao.getIndexes(lemma, pageList);
     }
 }

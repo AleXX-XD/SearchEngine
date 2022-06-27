@@ -19,4 +19,7 @@ public class LemmaService
         return lemmaDao.get(lemma);
     }
 
+    public List<Lemma> getLemmas(List<String> nameList) {
+        return lemmaDao.getLemmas(nameList);
+    }
 }
