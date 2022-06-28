@@ -1,5 +1,5 @@
 ## Overview
-The program for calculating the routes of the St. Petersburg metro
+A search engine that searches for words and phrases on websites
 
 ## Release Notes
 Can be found in [RELEASE_NOTES](RELEASE_NOTES.md).
