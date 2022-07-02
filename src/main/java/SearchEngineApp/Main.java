@@ -1,10 +1,16 @@
 package SearchEngineApp;
 
+import SearchEngineApp.models.Site;
+import SearchEngineApp.models.Status;
+import SearchEngineApp.services.SiteService;
 import SearchEngineApp.utils.HibernateSessionFactoryUtil;
 import SearchEngineApp.utils.IndexPagesUtil;
 import SearchEngineApp.utils.ParseSiteUtil;
 import SearchEngineApp.utils.SearchTextUtil;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
+import java.util.Date;
 import java.util.Scanner;
 
 public class Main
@@ -13,7 +19,7 @@ public class Main
     https://www.svetlovka.ru/  http://www.playback.ru/  http://radiomv.ru/  https://et-cetera.ru/mobile/
     https://dombulgakova.ru/
     https://dimonvideo.ru/   - большой
-    https://volochek.life/   - не доступен
+    https://volochek.life/   -
     */
 
     public static void main(String[] args) {
@@ -32,8 +38,23 @@ public class Main
                     case ("1"):
                         System.out.println("Введите адрес сайта для начала работы: ");
                         String url = scanner.nextLine().trim();
-                        ParseSiteUtil.startParse(removeSlash(url));
-                        IndexPagesUtil.startIndexing(removeSlash(url));
+                            SiteService siteService = new SiteService();
+                            Site site;
+                            if (siteService.getSite(removeSlash(url)) != null) {
+                                site = siteService.getSite(removeSlash(url));
+                            } else {
+                                site = new Site(removeSlash(url), "Сайт");
+                                site.setStatus(Status.INDEXING);
+                                site.setStatusTime(new Date());
+                                siteService.saveSite(site);
+                            }
+
+                            ParseSiteUtil.startParse(site);
+
+
+                            if (!site.getStatus().equals(Status.FAILED)) {
+                                site.setStatus(Status.INDEXED);
+                            }
                         break;
                     case ("2"):
                         System.out.println("Введите текст для поиска: ");

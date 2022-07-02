@@ -25,6 +25,13 @@ public class WebPage implements Serializable
     @Column(name = "content", columnDefinition = "mediumtext")
     private String content;
 
+    @Column(name = "site_id")
+//    @Column(name = "site_id", insertable = false, updatable = false)
+    private int siteId;
+
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    private Site site;
+
     @Transient
     private CopyOnWriteArraySet<String> urlList = new CopyOnWriteArraySet<>();
 
@@ -34,7 +41,8 @@ public class WebPage implements Serializable
 
     public  WebPage() {}
 
-    public WebPage(String path) {
+    public WebPage(String path, int siteId) {
         this.path = path;
+        this.siteId = siteId;
     }
 }

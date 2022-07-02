@@ -1,2 +1,8 @@
 server:
   port: 8082
+
+
+config:
+  site:
+    - url: https://www.rastr89.ru/
+      name: РАСТР

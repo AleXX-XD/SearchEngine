@@ -21,7 +21,7 @@ public class WebPageValue extends RecursiveAction {
             ParseSiteUtil.parsePage(webPage);
 
             for (String child: webPage.getUrlList()) {
-                WebPage webPageNew = new WebPage(child);
+                WebPage webPageNew = new WebPage(child, webPage.getSiteId());
                 WebPageValue task = new WebPageValue(webPageNew);
                 task.fork();
                 taskList.add(task);
