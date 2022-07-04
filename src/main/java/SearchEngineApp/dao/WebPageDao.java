@@ -1,14 +1,11 @@
 package SearchEngineApp.dao;
 
-import SearchEngineApp.models.Index;
-import SearchEngineApp.models.Lemma;
 import SearchEngineApp.models.WebPage;
 import SearchEngineApp.utils.HibernateSessionFactoryUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class WebPageDao
@@ -65,7 +62,7 @@ public class WebPageDao
     public void update(WebPage webPage) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        Query query = session.createQuery("update WebPage set content = :content, code = :code WHERE path = :path AND siteId = :siteId");
+        Query<WebPage> query = session.createQuery("update WebPage set content = :content, code = :code WHERE path = :path AND siteId = :siteId");
         query.setParameter("content", webPage.getContent());
         query.setParameter("code", webPage.getCode());
         query.setParameter("path", webPage.getPath());

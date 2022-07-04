@@ -5,13 +5,8 @@ import SearchEngineApp.models.Lemma;
 import SearchEngineApp.utils.HibernateSessionFactoryUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.persister.entity.Joinable;
 import org.hibernate.query.Query;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,11 +63,22 @@ public class IndexDao
     public void update(Index index) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        Query query = session.createQuery("update Index set rank = :rank" +
+        Query<Index> query = session.createQuery("update Index set rank = :rank" +
                 " where lemmaId = :lemmaId and pageId = :pageId");
         query.setParameter("rank", index.getRank());
         query.setParameter("lemmaId", index.getLemmaId());
         query.setParameter("pageId", index.getPageId() );
+        query.executeUpdate();
+        transaction.commit();
+        session.close();
+        System.out.println("index.getRank()  DAO = " + index.getRank());
+    }
+
+    public void resetRanks(List<Integer> lemmasIdList) {
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        Query<Index> query = session.createQuery("delete Index where lemmaId IN (:lemmaList)");
+        query.setParameterList("lemmaList", lemmasIdList);
         query.executeUpdate();
         transaction.commit();
         session.close();

@@ -2,7 +2,6 @@ package SearchEngineApp.dao;
 
 import SearchEngineApp.models.Site;
 import SearchEngineApp.models.Status;
-import SearchEngineApp.models.WebPage;
 import SearchEngineApp.utils.HibernateSessionFactoryUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -32,11 +31,13 @@ public class SiteDao {
         return site;
     }
 
-    public void updateStatus(Status indexStatus) {
+    public void updateStatus(Status indexStatus, String error) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        Query query = session.createQuery("update Site set status = :status");
+        Query<Site> query = session.createQuery("update Site set status = :status, statusTime = :statusTime, lastError = :lastError");
         query.setParameter("status", indexStatus);
+        query.setParameter("statusTime", new Date());
+        query.setParameter("lastError", error);
         query.executeUpdate();
         transaction.commit();
         session.close();
@@ -45,8 +46,8 @@ public class SiteDao {
     public void updateStatusTime(Site site) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        Query query = session.createQuery("update Site set statusTime = :statusTime WHERE id =: id");
-        query.setParameter("statusTime", site.getStatusTime());
+        Query<Site> query = session.createQuery("update Site set statusTime = :statusTime WHERE id =: id");
+        query.setParameter("statusTime", new Date());
         query.setParameter("id", site.getId());
         query.executeUpdate();
         transaction.commit();
@@ -56,7 +57,7 @@ public class SiteDao {
     public void update(Site site) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        Query query = session.createQuery("update Site set status = :status, statusTime = :statusTime, lastError = :lastError WHERE id = :id");
+        Query<Site> query = session.createQuery("update Site set status = :status, statusTime = :statusTime, lastError = :lastError WHERE id = :id");
         query.setParameter("status", site.getStatus());
         query.setParameter("statusTime", site.getStatusTime());
         query.setParameter("lastError", site.getLastError());

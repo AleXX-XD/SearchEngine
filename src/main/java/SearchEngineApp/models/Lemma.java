@@ -1,14 +1,15 @@
 package SearchEngineApp.models;
 
-import lombok.Data;
-import org.hibernate.annotations.SQLInsert;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "Lemma")
-//@SQLInsert(sql="insert into Lemma (frequency, lemma, site_id) values (?, ?, ?) on duplicate key update frequency = frequency + 1" )
 public class Lemma implements Serializable
 {
     @Id

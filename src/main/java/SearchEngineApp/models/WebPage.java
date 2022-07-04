@@ -1,12 +1,14 @@
 package SearchEngineApp.models;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "Page")
 public class WebPage implements Serializable
@@ -26,11 +28,7 @@ public class WebPage implements Serializable
     private String content;
 
     @Column(name = "site_id")
-//    @Column(name = "site_id", insertable = false, updatable = false)
     private int siteId;
-
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    private Site site;
 
     @Transient
     private CopyOnWriteArraySet<String> urlList = new CopyOnWriteArraySet<>();

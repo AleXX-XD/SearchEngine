@@ -20,8 +20,8 @@ public class IndexPagesUtil
 
     public static void startIndexing(Site transSite) {
         try {
-            site = transSite;
             long startTime = System.currentTimeMillis();
+            site = transSite;
 
             System.out.println(">>> Начало индексации сайта");
 
@@ -55,10 +55,7 @@ public class IndexPagesUtil
                     "Затраченное время = " + (System.currentTimeMillis() - startTime) / 1000 + " сек");
 
         } catch (Exception iex) {
-            site.setStatus(Status.FAILED);
-            site.setLastError(iex.getMessage());
-            site.setStatusTime(new Date());
-            siteService.updateSite(site);
+            siteService.updateStatus(Status.FAILED, iex.getMessage());
             iex.printStackTrace();
         }
     }
@@ -66,8 +63,8 @@ public class IndexPagesUtil
     private static synchronized void indexPage(WebPage webPage) {
         try {
             System.out.println("Начало индексации " + webPage.getPath());
-            ArrayList<String> lemmaList = new ArrayList<>();
-
+            siteService.updateStatusTime(site);
+            List<String> lemmaList = new ArrayList<>();
             Document doc = Jsoup.parse(webPage.getContent());
             for (Field field : fieldList) {
                 Elements el = doc.getElementsByTag(field.getSelector());
@@ -75,7 +72,7 @@ public class IndexPagesUtil
                     if (!lemmaList.contains(entry.getKey())) {
                         lemmaList.add(entry.getKey());
                         Lemma lemma = new Lemma(entry.getKey(), 1, webPage.getSiteId());
-                        lemmaService.saveLemma(lemma);
+                        lemma = lemmaService.saveLemma(lemma);
                         Index index = new Index(webPage.getId(),lemma.getId(), field.getWeight() * entry.getValue());
                         indexService.saveIndex(index);
                     } else {
@@ -88,10 +85,7 @@ public class IndexPagesUtil
                 }
             }
         } catch (Exception iex) {
-            site.setStatus(Status.FAILED);
-            site.setLastError("Ошибка индексации: " + iex.getMessage());
-            site.setStatusTime(new Date());
-            siteService.updateSite(site);
+            siteService.updateStatus(Status.FAILED, iex.getMessage());
             iex.printStackTrace();
         }
     }

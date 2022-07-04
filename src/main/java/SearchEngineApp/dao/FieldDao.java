@@ -21,7 +21,7 @@ public class FieldDao
                 "selector varchar(255)," +
                 "weight float," +
                 "primary key (id))";
-        Query query = session.createSQLQuery(sql).addEntity(Field.class);
+        Query<Field> query = session.createSQLQuery(sql).addEntity(Field.class);
         query.executeUpdate();
         transaction.commit();
         session.close();
@@ -31,7 +31,7 @@ public class FieldDao
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         String sql = "DROP TABLE IF EXISTS Field";
-        Query query = session.createSQLQuery(sql).addEntity(Field.class);
+        Query<Field> query = session.createSQLQuery(sql).addEntity(Field.class);
         query.executeUpdate();
         transaction.commit();
         session.close();

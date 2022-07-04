@@ -1,13 +1,14 @@
 package SearchEngineApp.models;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "Site")
 public class Site {
@@ -34,14 +35,17 @@ public class Site {
     @Column(name = "name")
     private String name;
 
-//    @OneToMany(mappedBy = "site")
-//    private List<WebPage> pages;
-
     public Site(){}
 
     public Site(String url, String name){
         this.url = url;
         this.name = name;
+    }
+
+    public void setAllParameters(Status status, Date statusTime, String lastError) {
+        this.status = status;
+        this.statusTime = statusTime;
+        this.lastError = lastError;
     }
 
 }

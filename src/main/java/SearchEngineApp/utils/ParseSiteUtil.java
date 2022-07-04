@@ -11,7 +11,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ForkJoinPool;
@@ -79,15 +78,11 @@ public class ParseSiteUtil
             Document doc = response.parse();
             webPage.setContent(doc.toString());
             pageData.add(webPage);
-            site.setStatusTime(new Date());
-            siteService.updateStatusTime(site);
 
             findLinks(webPage, doc);
 
         } catch (Exception iex) {
-            site.setStatus(Status.FAILED);
-            site.setLastError(iex.getMessage());
-            siteService.updateSite(site);
+            siteService.updateStatus(Status.FAILED, iex.getMessage());
             System.out.println("Страница " + site.getUrl() + webPage.getPath() + " НЕ ДОБАВЛЕНА: " + iex.getMessage());
         }
     }
@@ -127,11 +122,6 @@ public class ParseSiteUtil
     private static boolean isRelevant (String string) {
         Pattern filter1 = Pattern.compile(".*/\\S+\\.(x?html?|php|jsp)$");
         Pattern filter2 = Pattern.compile(".*/[^.$&?\\s]*$");
-        if (filter1.matcher(string).matches() || filter2.matcher(string).matches()) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return filter1.matcher(string).matches() || filter2.matcher(string).matches();
     }
 }

@@ -1,12 +1,9 @@
 package SearchEngineApp.services;
 
 import SearchEngineApp.dao.SiteDao;
-import SearchEngineApp.dao.WebPageDao;
 import SearchEngineApp.models.Site;
 import SearchEngineApp.models.Status;
-import SearchEngineApp.models.WebPage;
 
-import java.util.Date;
 
 public class SiteService {
 
@@ -22,8 +19,8 @@ public class SiteService {
         return siteDao.get(name);
     }
 
-    public void updateStatus(Status status) {
-        siteDao.updateStatus(status);
+    public void updateStatus(Status status, String error) {
+        siteDao.updateStatus(status, error);
     }
 
     public void updateStatusTime(Site site) {

@@ -1,10 +1,13 @@
 package SearchEngineApp.models;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "Field")
 public class Field implements Serializable {
