@@ -15,15 +15,12 @@ public class WebPageService
         webPageDao.save(webPage);
     }
 
-    public List<WebPage> getAllWebPages() {
-        return webPageDao.getAll();
+    public List<WebPage> getAllBySite(int siteId) {
+        return webPageDao.getBySite(siteId);
     }
 
     public List<WebPage> getAllWebPages(List<Integer> pageList) {
         return webPageDao.getAll(pageList);
     }
 
-    public WebPage getPage(int pageId) {
-        return webPageDao.get(pageId);
-    }
 }

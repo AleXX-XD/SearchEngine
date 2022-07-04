@@ -11,15 +11,23 @@ public class LemmaService
 
     public LemmaService() {}
 
-    public void saveLemma(Lemma lemma) {
-        lemmaDao.save(lemma);
+    public Lemma saveLemma(Lemma lemma) {
+        return lemmaDao.save(lemma);
     }
 
-    public Lemma getLemma(String lemma) {
-        return lemmaDao.get(lemma);
+    public Lemma getLemma(String lemma, int siteId) {
+        return lemmaDao.get(lemma, siteId);
     }
 
     public List<Lemma> getLemmas(List<String> nameList) {
         return lemmaDao.getLemmas(nameList);
+    }
+
+    public void resetLemmas(int siteId) {
+        lemmaDao.reset(siteId);
+    }
+
+    public List<Integer> getLemmasId (int siteId) {
+        return lemmaDao.getLemmasId(siteId);
     }
 }

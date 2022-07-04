@@ -1,6 +1,9 @@
 package SearchEngineApp.utils;
 
+import SearchEngineApp.models.Site;
+import SearchEngineApp.models.Status;
 import SearchEngineApp.models.WebPage;
+import SearchEngineApp.services.SiteService;
 import SearchEngineApp.services.WebPageService;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -15,17 +18,18 @@ import java.util.regex.Pattern;
 
 public class ParseSiteUtil
 {
-    private static String url;
+    private static Site site;
+    private static SiteService siteService = new SiteService();
 
     private static CopyOnWriteArraySet<String> allUrl = new CopyOnWriteArraySet<>();
     private static CopyOnWriteArraySet<WebPage> pageData= new CopyOnWriteArraySet<>();
 
-    public static void startParse(String urlAdress) {
-        url = urlAdress;
+    public static void startParse(Site transSite) {
+        site = transSite;
         long startTime = System.currentTimeMillis();
 
         System.out.println(">>> Запись карты сайта в БД");
-        WebPage webPage = new WebPage("/");
+        WebPage webPage = new WebPage("/", site.getId());
 
         mapOfSiteForkJoinPool(webPage);
 
@@ -38,12 +42,16 @@ public class ParseSiteUtil
 
         long insertParseTime = System.currentTimeMillis() - startTime;
 
+        IndexPagesUtil.startIndexing(site);
+
+        long indexTime = System.currentTimeMillis() - startTime;
+
         pageData = new CopyOnWriteArraySet<>();
         allUrl = new CopyOnWriteArraySet<>();
 
-        System.out.println(">>> Парсинг сайта < " + url + "/ > завершен.\n" +
-                "Затраченное время на парсинг = " + parseTime / 1000 + " сек\n" +
-                "Затраченное время на запись в БД = " + (insertParseTime - parseTime) / 1000 + " сек");
+        System.out.println(">>> Затраченное время на парсинг = " + parseTime / 1000 + " сек\n" +
+                ">>> Затраченное время на запись в БД = " + (insertParseTime - parseTime) / 1000 + " сек\n" +
+                ">>> Затраченное время на индексацию = " + (indexTime - insertParseTime) / 1000 + " сек\n");
     }
 
     private static void mapOfSiteForkJoinPool(WebPage webPage) {
@@ -74,29 +82,30 @@ public class ParseSiteUtil
             findLinks(webPage, doc);
 
         } catch (Exception iex) {
-            System.out.println("Страница " + url + webPage.getPath() + " НЕ ДОБАВЛЕНА: " + iex.getMessage());
+            siteService.updateStatus(Status.FAILED, iex.getMessage());
+            System.out.println("Страница " + site.getUrl() + webPage.getPath() + " НЕ ДОБАВЛЕНА: " + iex.getMessage());
         }
     }
 
     private static void findLinks(WebPage webPage, Document doc) {
-        Elements links = doc.select("a[href~=^" + url + "|^/.+]");
+        Elements links = doc.select("a[href~=^" + site.getUrl() + "|^/.+]");
         for (Element link : links) {
             if(!allUrl.contains(getCorrectLink(link.attributes().get("href")))){
                 allUrl.add(getCorrectLink(link.attributes().get("href")));
                 if(isRelevant(getCorrectLink(link.attributes().get("href")))) {
                     webPage.setUrlList(getCorrectLink(link.attributes().get("href")));
-                    System.out.println("Найдена новая ссылка: " + url + getCorrectLink(link.attributes().get("href")));
+                    System.out.println("Найдена новая ссылка: " + site.getUrl() + getCorrectLink(link.attributes().get("href")));
                 }
                 else {
-                    System.out.println("----- ССЫЛКА НЕ ДОБАВЛЕНА : " + url + getCorrectLink(link.attributes().get("href")));
+                    System.out.println("----- ССЫЛКА НЕ ДОБАВЛЕНА : " + site.getUrl() + getCorrectLink(link.attributes().get("href")));
                 }
             }
         }
     }
 
     private static String getCorrectLink(String link) {
-        if (link.startsWith(url)) {
-            link = link.replaceFirst(url,"");
+        if (link.startsWith(site.getUrl())) {
+            link = link.replaceFirst(site.getUrl(),"");
         }
         if (link.contains("#")) {
             link = link.substring(0, link.indexOf('#'));
@@ -107,17 +116,12 @@ public class ParseSiteUtil
     }
 
     private static String getFullLink(String link) {
-        return url + link;
+        return site.getUrl() + link;
     }
 
     private static boolean isRelevant (String string) {
         Pattern filter1 = Pattern.compile(".*/\\S+\\.(x?html?|php|jsp)$");
         Pattern filter2 = Pattern.compile(".*/[^.$&?\\s]*$");
-        if (filter1.matcher(string).matches() || filter2.matcher(string).matches()) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return filter1.matcher(string).matches() || filter2.matcher(string).matches();
     }
 }

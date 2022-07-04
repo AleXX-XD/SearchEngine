@@ -23,6 +23,7 @@
         <mapping class="SearchEngineApp.models.Field"/>
         <mapping class="SearchEngineApp.models.Index"/>
         <mapping class="SearchEngineApp.models.Lemma"/>
+        <mapping class="SearchEngineApp.models.Site"/>
 
     </session-factory>
 </hibernate-configuration>

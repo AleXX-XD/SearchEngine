@@ -1,49 +1,61 @@
 package SearchEngineApp.utils;
 
-import SearchEngineApp.models.Field;
-import SearchEngineApp.models.Index;
-import SearchEngineApp.models.Lemma;
-import SearchEngineApp.models.WebPage;
-import SearchEngineApp.services.FieldService;
-import SearchEngineApp.services.IndexService;
-import SearchEngineApp.services.LemmaService;
-import SearchEngineApp.services.WebPageService;
+import SearchEngineApp.models.*;
+import SearchEngineApp.services.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class IndexPagesUtil
 {
     private static List<Field> fieldList = new ArrayList<>();
+    private static LemmaService lemmaService = new LemmaService();
+    private static IndexService indexService = new IndexService();
+    private static SiteService siteService = new SiteService();
+    private static WebPageService webPageService = new WebPageService();
+    private static FieldService fieldService = new FieldService();
+    private static Site site;
 
-    public static void startIndexing(String urlAdress) {
+    public static void startIndexing(Site transSite) {
         try {
             long startTime = System.currentTimeMillis();
+            site = transSite;
 
             System.out.println(">>> Начало индексации сайта");
 
-            FieldService fieldService = new FieldService();
             if(fieldService.getSize() != 2) {
                 writingField(fieldService);
             }
 
             fieldList = fieldService.getFields();
 
-            WebPageService webPageService = new WebPageService();
-            for (WebPage webPage : webPageService.getAllWebPages()) {
-                    System.out.println(webPage.getPath());
+            List<WebPage> webPageList = webPageService.getAllBySite(site.getId());
+            System.out.println("webPageList.size() = " + webPageList.size());
+            if(webPageList.size() > 0) {
+                for (WebPage webPage : webPageList) {
                     indexPage(webPage);
                     System.out.println("Конец индексации");
+                }
+                if(site.getStatus() != Status.FAILED) {
+                    site.setStatusTime(new Date());
+                    site.setStatus(Status.INDEXED);
+                }
+            }
+            else {
+                site.setLastError("Нет доступных страниц для индексации");
+                site.setStatusTime(new Date());
+                site.setStatus(Status.FAILED);
             }
 
-            System.out.println(">>> Индексация сайта < " + urlAdress + "/ > завершена.\n" +
+            siteService.updateSite(site);
+
+            System.out.println(">>> Индексация сайта < " + site.getName() + "/ > завершена.\n" +
                     "Затраченное время = " + (System.currentTimeMillis() - startTime) / 1000 + " сек");
 
         } catch (Exception iex) {
+            siteService.updateStatus(Status.FAILED, iex.getMessage());
             iex.printStackTrace();
         }
     }
@@ -51,23 +63,20 @@ public class IndexPagesUtil
     private static synchronized void indexPage(WebPage webPage) {
         try {
             System.out.println("Начало индексации " + webPage.getPath());
-            ArrayList<String> lemmaList = new ArrayList<>();
-
-            LemmaService lemmaService = new LemmaService();
-            IndexService indexService = new IndexService();
-
+            siteService.updateStatusTime(site);
+            List<String> lemmaList = new ArrayList<>();
             Document doc = Jsoup.parse(webPage.getContent());
             for (Field field : fieldList) {
                 Elements el = doc.getElementsByTag(field.getSelector());
                 for (Map.Entry<String, Integer> entry : CreateLemmasUtil.createLemmasWithCount(el.eachText().get(0)).entrySet()) {
                     if (!lemmaList.contains(entry.getKey())) {
                         lemmaList.add(entry.getKey());
-                        Lemma lemma = new Lemma(entry.getKey(), 1);
-                        lemmaService.saveLemma(lemma);
+                        Lemma lemma = new Lemma(entry.getKey(), 1, webPage.getSiteId());
+                        lemma = lemmaService.saveLemma(lemma);
                         Index index = new Index(webPage.getId(),lemma.getId(), field.getWeight() * entry.getValue());
                         indexService.saveIndex(index);
                     } else {
-                        Lemma lemma = lemmaService.getLemma(entry.getKey());
+                        Lemma lemma = lemmaService.getLemma(entry.getKey(), webPage.getSiteId());
                         Index index = indexService.getIndex(lemma.getId(), webPage.getId());
                         float rank = index.getRank();
                         index.setRank(rank + entry.getValue() * field.getWeight());
@@ -76,6 +85,7 @@ public class IndexPagesUtil
                 }
             }
         } catch (Exception iex) {
+            siteService.updateStatus(Status.FAILED, iex.getMessage());
             iex.printStackTrace();
         }
     }

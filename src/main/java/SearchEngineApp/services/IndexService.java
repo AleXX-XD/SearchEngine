@@ -31,4 +31,8 @@ public class IndexService
     public List<Index> getIndexes(Lemma lemma, List<Integer> pageList) {
         return indexDao.getIndexes(lemma, pageList);
     }
+
+    public void resetRanks (List<Integer> idList) {
+        indexDao.resetRanks(idList);
+    }
 }
