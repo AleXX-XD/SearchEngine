@@ -4,16 +4,28 @@ import SearchEngineApp.models.Index;
 import SearchEngineApp.models.Lemma;
 import SearchEngineApp.models.SearchPage;
 import SearchEngineApp.models.WebPage;
-import SearchEngineApp.services.IndexService;
-import SearchEngineApp.services.LemmaService;
-import SearchEngineApp.services.WebPageService;
+import SearchEngineApp.service.IndexService;
+import SearchEngineApp.service.LemmaService;
+import SearchEngineApp.service.WebPageService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.*;
 
+@Component
 public class SearchTextUtil {
+
+    private static IndexService indexService;
+    private static WebPageService webPageService;
+    private static LemmaService lemmaService;
+
+    public SearchTextUtil (IndexService indexService, WebPageService webPageService, LemmaService lemmaService) {
+        SearchTextUtil.indexService = indexService;
+        SearchTextUtil.webPageService = webPageService;
+        SearchTextUtil.lemmaService = lemmaService;
+    }
 
     public static void startSearch(String text) throws IOException {
         long startTime = System.currentTimeMillis();
@@ -34,8 +46,6 @@ public class SearchTextUtil {
     }
 
     private static List<SearchPage> getSearchPages (List<Lemma> searchLemmas, List<Integer> searchPages, String searchText) throws IOException {
-        IndexService indexService = new IndexService();
-        WebPageService webPageService = new WebPageService();
         List<SearchPage> searchPageList = new ArrayList<>();
         List<Index> indexList = indexService.getIndexes(searchLemmas.get(searchLemmas.size()-1), searchPages);
         List<WebPage> webPageList = webPageService.getAllWebPages(searchPages);
@@ -87,7 +97,6 @@ public class SearchTextUtil {
     }
 
     private static List<Lemma> getLemmas (String text) throws IOException {
-        LemmaService lemmaService = new LemmaService();
         List<Lemma> searchLemmas = new ArrayList<>();
         List<String> lemmaNames = new ArrayList<>();
 
@@ -123,7 +132,6 @@ public class SearchTextUtil {
     }
 
     private static List<Integer> getPages (List<Lemma> searchLemmas) {
-        IndexService indexService = new IndexService();
         List<Integer> searchPages = new ArrayList<>();
 
         if (searchLemmas!=null) {

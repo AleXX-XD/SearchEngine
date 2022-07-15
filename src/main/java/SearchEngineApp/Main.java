@@ -1,16 +1,7 @@
 package SearchEngineApp;
 
-import SearchEngineApp.models.Site;
-import SearchEngineApp.models.Status;
-import SearchEngineApp.services.IndexService;
-import SearchEngineApp.services.LemmaService;
-import SearchEngineApp.services.SiteService;
-import SearchEngineApp.utils.HibernateSessionFactoryUtil;
-import SearchEngineApp.utils.ParseSiteUtil;
 import SearchEngineApp.utils.SearchTextUtil;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main
@@ -21,6 +12,7 @@ public class Main
     https://dimonvideo.ru/   - большой
     https://volochek.life/   -
     */
+
 
     public static void main(String[] args) {
 
@@ -38,27 +30,26 @@ public class Main
                     case ("1"):
                         System.out.println("Введите адрес сайта для начала работы: ");
                         String url = scanner.nextLine().trim();
-                        SiteService siteService = new SiteService();
-                        LemmaService lemmaService = new LemmaService();
-                        IndexService indexService = new IndexService();
-                            Site site;
-                            if (siteService.getSite(removeSlash(url)) != null) {
-                                site = siteService.getSite(removeSlash(url));
-                                site.setAllParameters(Status.INDEXING, new Date(), null);
-                                List<Integer> lemmasId = lemmaService.getLemmasId(site.getId());
-                                lemmaService.resetLemmas(site.getId());
-                                indexService.resetRanks(lemmasId);
-                            } else {
-                                site = new Site(removeSlash(url), "Сайт");
-                                site.setAllParameters(Status.INDEXING, new Date(), null);
-                                siteService.saveSite(site);
-                            }
-
-                            ParseSiteUtil.startParse(site);
-
-                            if (!site.getStatus().equals(Status.FAILED)) {
-                                siteService.updateStatus(Status.INDEXED, null);
-                            }
+//                        SiteService siteService;
+//                        LemmaService lemmaService;
+//                        IndexService indexService;
+//                            Site site;
+//                            if (siteService.getSite(removeSlash(url)) != null) {
+//                                site = siteService.getSite(removeSlash(url));
+//                                site.setAllParameters(Status.INDEXING, new Date(), null);
+//                                List<Integer> lemmasId = lemmaService.getLemmasId(site.getId());
+//                                lemmaService.resetLemmas(site.getId());
+//                                indexService.resetRanks(lemmasId);
+//                            } else {
+//                                site = new Site(removeSlash(url), "Сайт");
+//                                site.setAllParameters(Status.INDEXING, new Date(), null);
+//                                siteService.saveSite(site);
+//                            }
+//                            ParseSiteUtil.startParse(site);
+//
+//                            if (!site.getStatus().equals(Status.FAILED)) {
+//                                siteService.updateStatus(Status.INDEXED, null);
+//                            }
                         break;
                     case ("2"):
                         System.out.println("Введите текст для поиска: ");
@@ -66,11 +57,11 @@ public class Main
                         SearchTextUtil.startSearch(text);
                         break;
                     case ("10"):
-                        LemmaService lemmaService1 = new LemmaService();
-                        IndexService indexService1 = new IndexService();
-                        List<Integer> lemmasId = lemmaService1.getLemmasId(1);
-                        lemmaService1.resetLemmas(1);
-                        indexService1.resetRanks(lemmasId);
+//                        LemmaService lemmaService1 = new LemmaService();
+//                        IndexService indexService1 = new IndexService();
+//                        List<Integer> lemmasId = lemmaService1.getLemmasId(1);
+//                        lemmaService1.resetLemmas(1);
+//                        indexService1.resetRanks(lemmasId);
                         stop = true;
                         break;
                     default:
@@ -79,7 +70,6 @@ public class Main
             }
             while (!stop);
 
-            HibernateSessionFactoryUtil.closeSessionFactory();
             System.out.println("******************************************");
             System.out.println("Программа завершена!");
             System.out.println("******************************************");

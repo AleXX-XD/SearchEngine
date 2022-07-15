@@ -1,8 +1,25 @@
 server:
   port: 8082
 
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver #
+    url: jdbc:mysql://localhost:3306/search_engine?useSSL=false
+    username: root
+    password: 12345
+    pool-size: 100  #
+  jpa:
+    driver: com.mysql.cj.jdbc.Driver
+    hibernate:
+      database-platform: org.hibernate.dialect.MySQL5Dialect  #
+      show-sql: true  #
+      ddl-auto: update
 
 config:
-  site:
+  webinterface: /admin
+  agent: SearchEngineBot
+  sites:
     - url: https://www.rastr89.ru/
       name: РАСТР
+    - url: https://artline89.ru/
+      name: АртЛайн

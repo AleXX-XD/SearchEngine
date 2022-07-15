@@ -1,10 +1,13 @@
 package SearchEngineApp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,14 +26,16 @@ public class Lemma implements Serializable
     @Column(name = "frequency")
     private int frequency;
 
-    @Column(name = "site_id")
-    private int siteId;
+    @ManyToOne
+    @JoinColumn(name = "site_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Site site;
 
     public Lemma(){}
 
-    public Lemma(String lemma, int frequency, int siteId){
+    public Lemma(String lemma, int frequency, Site site){
         this.frequency = frequency;
         this.lemma = lemma;
-        this.siteId = siteId;
+        this.site = site;
     }
 }
