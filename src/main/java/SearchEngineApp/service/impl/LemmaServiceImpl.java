@@ -18,7 +18,7 @@ public class LemmaServiceImpl implements LemmaService {
     }
 
     @Override
-    public Lemma saveLemma(Lemma lemma) {
+    public synchronized Lemma saveLemma(Lemma lemma) {
         if(getLemma(lemma.getLemma(), lemma.getSite().getId()) != null) {
             lemma = getLemma(lemma.getLemma(), lemma.getSite().getId());
             lemma.setFrequency(lemma.getFrequency() + 1);
@@ -28,7 +28,7 @@ public class LemmaServiceImpl implements LemmaService {
     }
 
     @Override
-    public Lemma getLemma(String lemma, int siteId) {
+    public Lemma getLemma(String lemma, long siteId) {
         return lemmaRepository.findByLemmaAndSiteId(lemma, siteId);
     }
 
@@ -41,18 +41,13 @@ public class LemmaServiceImpl implements LemmaService {
     }
 
     @Override
-    public void resetLemmas(int siteId) {
-        lemmaRepository.deleteAllBySiteId(siteId);
+    public synchronized void resetLemmas(List<Lemma> lemmaList) {
+        lemmaRepository.deleteAll(lemmaList);
     }
 
     @Override
-    public List<Integer> getLemmasId(int siteId) {
-        List<Integer> listId = new ArrayList<>();
-        Iterable<Lemma> lemmas = lemmaRepository.findAllBySiteId(siteId);
-        lemmas.forEach(lemma -> {
-            listId.add(lemma.getId());
-        });
-        return listId;
+    public List<Lemma> getLemmas(long siteId) {
+        return lemmaRepository.findAllBySiteId(siteId);
     }
 
     @Override

@@ -19,7 +19,27 @@ config:
   webinterface: /admin
   agent: SearchEngineBot
   sites:
-    - url: https://www.rastr89.ru/
-      name: РАСТР
-    - url: https://artline89.ru/
-      name: АртЛайн
+#    - url: https://www.rastr89.ru/
+#      name: РАСТР
+#    - url: https://artline89.ru/
+#      name: АртЛайн
+#    - url: http://www.playback.ru/
+#      name: PlayBack
+    - url: https://volochek.life/
+      name: Волочёк
+#    - url: http://radiomv.ru/
+#      name: РадиоМВ
+#    - url: https://ipfran.ru/
+#      name: ИПФан
+    - url: https://dimonvideo.ru/
+      name: ДимонВидео
+#    - url: https://nikoartgallery.com
+#      name: Галерея
+    - url: https://et-cetera.ru/mobile/
+      name: ЭлЦентра. Мобильная версия
+#    - url:  https://www.lutherancathedral.ru
+#      name: Кафедральный собор
+#    - url: https://dombulgakova.ru/
+#      name: Дом Булгакова
+#    - url: https://www.svetlovka.ru/
+#      name: Светловка

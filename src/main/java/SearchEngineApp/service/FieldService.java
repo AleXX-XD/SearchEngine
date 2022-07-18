@@ -9,7 +9,4 @@ public interface FieldService
     List<Field> getFields();
     long getSize();
 
-
-    void dropTable();
-    void createTable();
 }

@@ -30,7 +30,7 @@ public class SearchTextUtil {
     public static void startSearch(String text) throws IOException {
         long startTime = System.currentTimeMillis();
         List<Lemma> lemmas = getLemmas(text);
-        List<Integer> pages = getPages(lemmas);
+        List<Long> pages = getPages(lemmas);
 
 
         List<SearchPage> searchPages = getSearchPages(lemmas, pages, text);
@@ -45,7 +45,7 @@ public class SearchTextUtil {
         System.out.println("Затраченное время на поиск = " + (System.currentTimeMillis() - startTime) / 1000 + "сек.");
     }
 
-    private static List<SearchPage> getSearchPages (List<Lemma> searchLemmas, List<Integer> searchPages, String searchText) throws IOException {
+    private static List<SearchPage> getSearchPages (List<Lemma> searchLemmas, List<Long> searchPages, String searchText) throws IOException {
         List<SearchPage> searchPageList = new ArrayList<>();
         List<Index> indexList = indexService.getIndexes(searchLemmas.get(searchLemmas.size()-1), searchPages);
         List<WebPage> webPageList = webPageService.getAllWebPages(searchPages);
@@ -131,12 +131,12 @@ public class SearchTextUtil {
         return searchLemmas;
     }
 
-    private static List<Integer> getPages (List<Lemma> searchLemmas) {
-        List<Integer> searchPages = new ArrayList<>();
+    private static List<Long> getPages (List<Lemma> searchLemmas) {
+        List<Long> searchPages = new ArrayList<>();
 
         if (searchLemmas!=null) {
             for (Lemma lemma : searchLemmas) {
-                List<Integer> pages = indexService.getPages(lemma.getId());
+                List<Long> pages = indexService.getPages(lemma.getId());
                 if (searchPages.isEmpty()) {
                     searchPages.addAll(pages);
                 } else {

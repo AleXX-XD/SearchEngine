@@ -7,11 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface WebPageRepository extends CrudRepository<WebPage,Integer>
+public interface WebPageRepository extends CrudRepository<WebPage,Long>
 {
-    List<WebPage> findAllBySiteId(int idSite);
-    List<WebPage> findAllByIdIn(List<Integer> pageList);
-    WebPage findByPathAndSiteId(String pagePath, int idSite);
-
+    List<WebPage> findAllBySiteId(long idSite);
+    List<WebPage> findAllByIdIn(List<Long> pageList);
 
 }

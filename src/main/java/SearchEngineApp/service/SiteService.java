@@ -10,11 +10,7 @@ public interface SiteService {
     void saveSite(Site site);
     Site getSite(String url);
     List<Site> getAllSites();
-    long siteCount();
     long countStatusIndexing();
-
-    void updateStatus(Status status, String error);
-    void updateStatusTime(Site site);
-    void updateSite(Site site);
+    List<Site> getAllIndexingSite();
 
 }

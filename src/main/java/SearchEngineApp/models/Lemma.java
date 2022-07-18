@@ -18,7 +18,7 @@ public class Lemma implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
 
     @Column(name = "lemma")
     private String lemma;

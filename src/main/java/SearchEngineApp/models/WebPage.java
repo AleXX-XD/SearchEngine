@@ -17,9 +17,9 @@ public class WebPage implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
 
-    @Column(name = "path", columnDefinition = "mediumtext")
+    @Column(name = "path", columnDefinition = "text")
     private String path;
 
     @Column(name = "code")

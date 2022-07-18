@@ -8,9 +8,8 @@ import java.util.List;
 public interface IndexService
 {
     void saveIndex(Index index);
-    Index getIndex(int lemmaId, int pageId);
-    void updateIndex(Index index);
-    List<Integer> getPages(int lemmaId);
-    List<Index> getIndexes(Lemma lemma, List<Integer> pageList);
-    void resetRanks (List<Integer> idList);
+    Index getIndex(long lemmaId, long pageId);
+    List<Long> getPages(long lemmaId);
+    List<Index> getIndexes(Lemma lemma, List<Long> pageList);
+    void resetRanks (List<Lemma> lemmaList);
 }

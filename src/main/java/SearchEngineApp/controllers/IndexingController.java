@@ -16,9 +16,14 @@ public class IndexingController
     }
 
     @GetMapping(value = "/startIndexing")
-    public ResponseEntity<Object> startIndexing() {
+    public ResponseEntity<Object> startIndexing() throws Exception {
         Response response = indexingService.startAllIndexing();
         return ResponseEntity.ok(response);
+    }
 
+    @GetMapping(value = "/stopIndexing")
+    public ResponseEntity<Object> stopIndexing() throws InterruptedException {
+        Response response = indexingService.stopIndexing();
+        return ResponseEntity.ok(response);
     }
 }

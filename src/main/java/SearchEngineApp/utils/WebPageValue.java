@@ -1,6 +1,7 @@
 package SearchEngineApp.utils;
 
 import SearchEngineApp.models.WebPage;
+import SearchEngineApp.service.impl.IndexingServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +18,9 @@ public class WebPageValue extends RecursiveAction {
     @Override
     protected void compute() {
         List<WebPageValue> taskList = new ArrayList<>();
-        try {
+        if (IndexingServiceImpl.isRun) {
             ParseSiteUtil.parsePage(webPage);
-
-            for (String child: webPage.getUrlList()) {
+            for (String child : webPage.getUrlList()) {
                 WebPage webPageNew = new WebPage(child, webPage.getSite());
                 WebPageValue task = new WebPageValue(webPageNew);
                 task.fork();
@@ -29,9 +29,6 @@ public class WebPageValue extends RecursiveAction {
             for (WebPageValue task : taskList) {
                 task.join();
             }
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
         }
     }
 }

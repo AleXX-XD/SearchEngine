@@ -20,7 +20,7 @@ public class FieldServiceImpl implements FieldService
     }
 
     @Override
-    public void saveField(Field field) {
+    public synchronized void saveField(Field field) {
         fieldRepository.save(field);
     }
 
@@ -37,9 +37,4 @@ public class FieldServiceImpl implements FieldService
         return fieldRepository.count();
     }
 
-    @Override
-    public void dropTable() {}
-
-    @Override
-    public void createTable() {}
 }

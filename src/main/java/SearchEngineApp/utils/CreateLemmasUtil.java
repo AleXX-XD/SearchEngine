@@ -1,5 +1,6 @@
 package SearchEngineApp.utils;
 
+import org.apache.log4j.Logger;
 import org.apache.lucene.morphology.LuceneMorphology;
 import org.apache.lucene.morphology.english.EnglishLuceneMorphology;
 import org.apache.lucene.morphology.russian.RussianLuceneMorphology;
@@ -12,6 +13,8 @@ import java.util.TreeMap;
 
 public class CreateLemmasUtil
 {
+    private static final Logger log = Logger.getLogger(CreateLemmasUtil.class);
+
     public static HashMap<String,Integer> createLemmasWithCount (String text) throws IOException {
         LuceneMorphology luceneMorphRus= new RussianLuceneMorphology();
         LuceneMorphology luceneMorphEng= new EnglishLuceneMorphology();
@@ -54,7 +57,7 @@ public class CreateLemmasUtil
                 }
             }
             catch (Exception ex) {
-                System.out.println("Ошибка лемматизатора, на слове : " + string);
+                log.warn("Ошибка лемматизатора, на слове : " + string);
             }
         }
         return rightWords;

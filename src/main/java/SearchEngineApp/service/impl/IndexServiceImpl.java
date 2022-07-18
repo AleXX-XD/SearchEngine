@@ -7,6 +7,7 @@ import SearchEngineApp.service.IndexService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,33 +20,35 @@ public class IndexServiceImpl implements IndexService
     }
 
     @Override
-    public void saveIndex(Index index) {
+    public synchronized void saveIndex(Index index) {
         indexRepository.save(index);
     }
 
     @Override
-    public void resetRanks(List<Integer> idList) {
-        indexRepository.deleteAllByLemmaIdIn(idList);
+    public synchronized void resetRanks(List<Lemma> lemmaList) {
+        List<Long> lemmaIdList = new ArrayList<>();
+        lemmaList.forEach(lemma -> lemmaIdList.add(lemma.getId()));
+        List<Index> indexList = indexRepository.findAllByLemmaIdIn(lemmaIdList);
+        indexRepository.deleteAll(indexList);
     }
 
     @Override
-    public Index getIndex(int lemmaId, int pageId) {
+    public Index getIndex(long lemmaId, long pageId) {
         return indexRepository.findByLemmaIdAndPageId(lemmaId, pageId);
     }
 
-    @Override
-    public void updateIndex(Index index) {
 
+    @Override
+    public List<Long> getPages(long lemmaId) {
+        List<Index> indexList = indexRepository.findAllByLemmaId(lemmaId);
+        List<Long> pageIdList = new ArrayList<>();
+        indexList.forEach(index -> pageIdList.add(index.getPageId()));
+        return pageIdList;
     }
 
     @Override
-    public List<Integer> getPages(int lemmaId) {
-        return null;
-    }
-
-    @Override
-    public List<Index> getIndexes(Lemma lemma, List<Integer> pageList) {
-        return null;
+    public List<Index> getIndexes(Lemma lemma, List<Long> pageList) {
+        return indexRepository.findAllByLemmaIdAndPageIdIn(lemma.getId(), pageList);
     }
 
 

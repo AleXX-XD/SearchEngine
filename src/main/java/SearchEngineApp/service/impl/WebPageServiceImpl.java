@@ -17,22 +17,27 @@ public class WebPageServiceImpl implements WebPageService {
     }
 
     @Override
-    public void savePage(WebPage page) {
+    public synchronized void savePage(WebPage page) {
         pageRepository.save(page);
     }
 
     @Override
-    public List<WebPage> getAllBySite(int siteId) {
+    public List<WebPage> getAllBySite(long siteId) {
         return pageRepository.findAllBySiteId(siteId);
     }
 
     @Override
-    public List<WebPage> getAllWebPages(List<Integer> pageList) {
+    public List<WebPage> getAllWebPages(List<Long> pageList) {
         return pageRepository.findAllByIdIn(pageList);
     }
 
     @Override
     public Long pageCount() {
         return pageRepository.count();
+    }
+
+    @Override
+    public synchronized void resetPages(List<WebPage> pageList) {
+        pageRepository.deleteAll(pageList);
     }
 }

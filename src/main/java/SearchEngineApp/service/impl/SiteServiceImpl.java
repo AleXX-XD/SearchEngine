@@ -20,7 +20,7 @@ public class SiteServiceImpl implements SiteService
     }
 
     @Override
-    public void saveSite(Site site) {
+    public synchronized void saveSite(Site site) {
         siteRepository.save(site);
     }
 
@@ -42,24 +42,8 @@ public class SiteServiceImpl implements SiteService
         return siteRepository.countByStatusIndexing();
     }
 
-    @Override
-    public long siteCount() {
-        return siteRepository.count();
+    public List<Site> getAllIndexingSite() {
+        return siteRepository.findAllByStatusIndexing();
     }
 
-
-
-    @Override
-    public void updateStatus(Status status, String error) {
-
-    }
-
-    @Override
-    public void updateStatusTime(Site site) {
-
-    }
-
-    @Override
-    public void updateSite(Site site) {
-    }
 }

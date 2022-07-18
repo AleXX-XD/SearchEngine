@@ -7,8 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface IndexRepository extends CrudRepository<Index, Integer>
+public interface IndexRepository extends CrudRepository<Index, Long>
 {
-    void deleteAllByLemmaIdIn(List<Integer> lemmaList);
-    Index findByLemmaIdAndPageId(int lemmaId, int pageId);
+    List<Index> findAllByLemmaIdIn(List<Long> lemmaIdList);
+    Index findByLemmaIdAndPageId(long lemmaId, long pageId);
+    List<Index> findAllByLemmaId(long lemmaId);
+    List<Index> findAllByLemmaIdAndPageIdIn(long lemmaId, List<Long> pageIdList);
 }
