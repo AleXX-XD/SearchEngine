@@ -1,11 +1,14 @@
 package SearchEngineApp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,7 +19,7 @@ public class Site {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
@@ -34,6 +37,14 @@ public class Site {
 
     @Column(name = "name")
     private String name;
+
+    @OneToMany(mappedBy = "site")
+    @JsonIgnore
+    private List<WebPage> pageList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "site")
+    @JsonIgnore
+    private List<Lemma> lemmaList = new ArrayList<>();
 
     public Site(){}
 

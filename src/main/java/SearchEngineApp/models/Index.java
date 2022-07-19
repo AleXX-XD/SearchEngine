@@ -15,20 +15,20 @@ public class Index implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
 
     @Column(name = "page_id")
-    private int pageId;
+    private long pageId;
 
     @Column(name = "lemma_id")
-    private int lemmaId;
+    private long lemmaId;
 
     @Column(name = "ranks")
     private float rank;
 
     public Index() {}
 
-    public Index(int pageId, int lemmaId, float rank) {
+    public Index(long pageId, long lemmaId, float rank) {
         this.pageId = pageId;
         this.lemmaId = lemmaId;
         this.rank = rank;

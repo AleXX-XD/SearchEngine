@@ -1,5 +1,5 @@
 .API-error {
-  display: block;
+  display: inline;
   margin-top: 5px;
   color: #ba6347;
   font-size: 13px;
@@ -157,7 +157,6 @@
 .Middle-top {
   padding: 20px 0 20px;
   margin-bottom: 20px;
-  background: #177db8 url("../img/bg/books.png") left center repeat-x;
   min-height: 130px;
   display: flex;
   align-items: center;
@@ -185,7 +184,6 @@
   position: absolute;
   content: '';
   display: block;
-  background: url("../img/bg/entry.jpg") center center no-repeat;
   background-size: cover;
   left: 0;
   right: 0;
@@ -196,7 +194,6 @@
 }
 @media screen and (max-width: 480px) {
   .Middle_form:after {
-    background: url("../img/bg/entry_phone.jpg") center center no-repeat;
   }
 }
 .Middle_form:before {

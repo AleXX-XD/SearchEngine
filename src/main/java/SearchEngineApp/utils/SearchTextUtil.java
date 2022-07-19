@@ -4,21 +4,33 @@ import SearchEngineApp.models.Index;
 import SearchEngineApp.models.Lemma;
 import SearchEngineApp.models.SearchPage;
 import SearchEngineApp.models.WebPage;
-import SearchEngineApp.services.IndexService;
-import SearchEngineApp.services.LemmaService;
-import SearchEngineApp.services.WebPageService;
+import SearchEngineApp.service.IndexService;
+import SearchEngineApp.service.LemmaService;
+import SearchEngineApp.service.WebPageService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.*;
 
+@Component
 public class SearchTextUtil {
+
+    private static IndexService indexService;
+    private static WebPageService webPageService;
+    private static LemmaService lemmaService;
+
+    public SearchTextUtil (IndexService indexService, WebPageService webPageService, LemmaService lemmaService) {
+        SearchTextUtil.indexService = indexService;
+        SearchTextUtil.webPageService = webPageService;
+        SearchTextUtil.lemmaService = lemmaService;
+    }
 
     public static void startSearch(String text) throws IOException {
         long startTime = System.currentTimeMillis();
         List<Lemma> lemmas = getLemmas(text);
-        List<Integer> pages = getPages(lemmas);
+        List<Long> pages = getPages(lemmas);
 
 
         List<SearchPage> searchPages = getSearchPages(lemmas, pages, text);
@@ -33,9 +45,7 @@ public class SearchTextUtil {
         System.out.println("Затраченное время на поиск = " + (System.currentTimeMillis() - startTime) / 1000 + "сек.");
     }
 
-    private static List<SearchPage> getSearchPages (List<Lemma> searchLemmas, List<Integer> searchPages, String searchText) throws IOException {
-        IndexService indexService = new IndexService();
-        WebPageService webPageService = new WebPageService();
+    private static List<SearchPage> getSearchPages (List<Lemma> searchLemmas, List<Long> searchPages, String searchText) throws IOException {
         List<SearchPage> searchPageList = new ArrayList<>();
         List<Index> indexList = indexService.getIndexes(searchLemmas.get(searchLemmas.size()-1), searchPages);
         List<WebPage> webPageList = webPageService.getAllWebPages(searchPages);
@@ -87,7 +97,6 @@ public class SearchTextUtil {
     }
 
     private static List<Lemma> getLemmas (String text) throws IOException {
-        LemmaService lemmaService = new LemmaService();
         List<Lemma> searchLemmas = new ArrayList<>();
         List<String> lemmaNames = new ArrayList<>();
 
@@ -122,13 +131,12 @@ public class SearchTextUtil {
         return searchLemmas;
     }
 
-    private static List<Integer> getPages (List<Lemma> searchLemmas) {
-        IndexService indexService = new IndexService();
-        List<Integer> searchPages = new ArrayList<>();
+    private static List<Long> getPages (List<Lemma> searchLemmas) {
+        List<Long> searchPages = new ArrayList<>();
 
         if (searchLemmas!=null) {
             for (Lemma lemma : searchLemmas) {
-                List<Integer> pages = indexService.getPages(lemma.getId());
+                List<Long> pages = indexService.getPages(lemma.getId());
                 if (searchPages.isEmpty()) {
                     searchPages.addAll(pages);
                 } else {
@@ -145,6 +153,7 @@ public class SearchTextUtil {
     }
 
     private static String getSnippet (String searchText, String mainText) throws IOException {
+        mainText = mainText.toLowerCase().replace('ё', 'е');
         String[] textArray = mainText.split("(?!^)\\b");
         TreeMap<Integer,List<String>> lemmasIndexes = CreateLemmasUtil.getIndexLemmas(textArray);
         List<List<String>> lemmasFromText = CreateLemmasUtil.createLemmas(searchText);

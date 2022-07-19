@@ -376,6 +376,7 @@ textarea {
   background: transparent;
   color: #fff;
 }
+
 @media screen and (min-width: 990px) {
   .btn:hover {
     transition: all 200ms;
@@ -1188,7 +1189,6 @@ select + select {
 }
 .selectList-icon {
   display: block;
-  background: url("../img/icons/arrowMuted.svg") 0 0 no-repeat;
   width: 12px;
   height: 8px;
   margin-left: 15px;

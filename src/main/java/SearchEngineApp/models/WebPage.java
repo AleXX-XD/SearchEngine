@@ -1,5 +1,6 @@
 package SearchEngineApp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +17,7 @@ public class WebPage implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
 
     @Column(name = "path", columnDefinition = "text")
     private String path;
@@ -27,8 +28,10 @@ public class WebPage implements Serializable
     @Column(name = "content", columnDefinition = "mediumtext")
     private String content;
 
-    @Column(name = "site_id")
-    private int siteId;
+    @ManyToOne
+    @JoinColumn(name = "site_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Site site;
 
     @Transient
     private CopyOnWriteArraySet<String> urlList = new CopyOnWriteArraySet<>();
@@ -39,8 +42,8 @@ public class WebPage implements Serializable
 
     public  WebPage() {}
 
-    public WebPage(String path, int siteId) {
+    public WebPage(String path, Site site) {
         this.path = path;
-        this.siteId = siteId;
+        this.site = site;
     }
 }
