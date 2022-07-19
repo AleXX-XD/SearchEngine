@@ -20,3 +20,9 @@
 
 * ## 0.4.2-SNAPSHOT
 * Reduced the number of queries to the database during the search query. The search time in decreased 2 times
+
+## 0.5.0-SNAPSHOT
+* SE-5: The connection of the Web interface and launch using Spring Boot is implemented. 
+* The ability to index multiple sites simultaneously or individually has been created.
+* It is possible to stop the indexing process manually.
+* Fixed lemmatizer errors and fixed memory leak.
