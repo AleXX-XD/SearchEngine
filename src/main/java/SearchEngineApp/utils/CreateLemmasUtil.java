@@ -16,7 +16,7 @@ public class CreateLemmasUtil
         LuceneMorphology luceneMorphRus= new RussianLuceneMorphology();
         LuceneMorphology luceneMorphEng= new EnglishLuceneMorphology();
         HashMap<String,Integer> lemmas = new HashMap<>();
-        text = text.toLowerCase(Locale.ROOT).replace('ё', 'е');
+        text = text.toLowerCase().replace('ё', 'е');
         String[] stringArray = text.split("[^а-яА-ЯёЁa-zA-Z]");
         for(String string : stringArray) {
             if (string.matches("[а-яА-ЯёЁ]+")) {
@@ -64,7 +64,7 @@ public class CreateLemmasUtil
         LuceneMorphology luceneMorphRus= new RussianLuceneMorphology();
         LuceneMorphology luceneMorphEng= new EnglishLuceneMorphology();
         List<List<String>> lemmasList = new ArrayList<>();
-        text = text.toLowerCase(Locale.ROOT).replace('ё', 'е');
+        text = text.toLowerCase().replace('ё', 'е');
         String[] stringArray = text.split("[^а-яА-ЯёЁa-zA-Z]");
         for(String string : stringArray) {
             List<String> list;
@@ -87,7 +87,6 @@ public class CreateLemmasUtil
         LuceneMorphology luceneMorphRus = new RussianLuceneMorphology();
         LuceneMorphology luceneMorphEng = new EnglishLuceneMorphology();
         TreeMap<Integer, List<String>> lemmasMap = new TreeMap<>();
-
         for (int i = 0; i < textArray.length; i++) {
             String[] clearString = textArray[i].split("[^а-яА-ЯёЁa-zA-Z]");
             if(clearString.length != 0) {

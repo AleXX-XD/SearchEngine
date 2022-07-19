@@ -79,7 +79,7 @@ public class IndexPageRunnable implements Runnable{
                 }
             lemmaList.clear();
         } catch (Exception iex) {
-            log.warn("Ошибка при индексации страницы: '" + webPage.getSite().getUrl() + webPage.getPath() +
+            log.error("Ошибка при индексации страницы: '" + webPage.getSite().getUrl() + webPage.getPath() +
                      "' : " + iex.getMessage());
             iex.printStackTrace();
         }

@@ -67,10 +67,10 @@ public class ParseSiteUtil implements Runnable
 
                 if (IndexingServiceImpl.isRun) {
                     pageService.saveAllPage(pageData);
+                    pageData.clear();
                     long insertParseTime = System.currentTimeMillis() - startTime;
                     try {
-                        IndexPagesUtil.startIndexing(site, pageData);
-                        pageData.clear();
+                        IndexPagesUtil.startIndexing(site);
                     }
                     catch (Exception ex) {
                         throw ex;
@@ -93,7 +93,7 @@ public class ParseSiteUtil implements Runnable
             }
         }
         catch (Exception ex) {
-            log.warn("Ошибка при индексации сайта '" + site.getUrl() + "': " + ex.getMessage());
+            log.error("Ошибка при индексации сайта '" + site.getUrl() + "': " + ex.getMessage());
             site.setAllParameters(Status.FAILED, new Date(), "Ошибка при индексации. " + ex.getMessage());
             siteService.saveSite(site);
             ex.printStackTrace();
@@ -112,9 +112,6 @@ public class ParseSiteUtil implements Runnable
         try {
                 Random random = new Random();
                 String numberUserAgent = String.valueOf(random.nextInt());
-
-                System.out.println("Начат парсинг страницы : " + webPage.getSite().getUrl() + webPage.getPath() + " / " + Thread.currentThread().getName());
-
                 Thread.sleep(150);
                 Connection.Response response = Jsoup.connect(getFullLink(webPage.getPath(), webPage.getSite()))
                         .userAgent(searchConfig.getAgent() + numberUserAgent)

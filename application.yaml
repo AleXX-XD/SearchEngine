@@ -23,8 +23,8 @@ config:
       name: РАСТР
     - url: https://artline89.ru/
       name: АртЛайн
-#    - url: https://volochek.life/
-#      name: Городской портал Вышний Волочёк
+    - url: https://volochek.life/
+      name: Городской портал Вышний Волочёк
 #    - url: https://dimonvideo.ru/
 #      name: ДимонВидео
     - url: https://et-cetera.ru/mobile/
@@ -37,11 +37,9 @@ config:
 #      name: Институт прикладной физики Российской академии наук
 #    - url: https://nikoartgallery.com
 #      name: Галерея Н.Б.Никогосяна
-#    - url:  https://www.lutherancathedral.ru
-#      name: Собор Петра и Павла
-    - url: https://dombulgakova.ru/
-      name: Музей театр "Дом Булгакова"
+    - url:  https://www.lutherancathedral.ru
+      name: Собор Петра и Павла
+#    - url: https://dombulgakova.ru/
+#      name: Музей театр "Дом Булгакова"
 #    - url: https://www.svetlovka.ru/
 #      name: Молодежная библиотека им. М.А.Светлова
-    - url: https://dombulgakova.ru/volontery/
-      name: Volontery

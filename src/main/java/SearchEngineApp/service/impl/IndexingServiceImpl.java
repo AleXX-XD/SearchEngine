@@ -60,7 +60,7 @@ public class IndexingServiceImpl implements IndexingService {
                     parseSiteUtil.setSite(site);
                     futures.add(executor.submit(parseSiteUtil, (Object) null));
                 } catch (Exception ex) {
-                    log.warn("Ошибка при индексации сайта '" + site.getUrl() + "': " + ex.getMessage());
+                    log.error("Ошибка при индексации сайта '" + site.getUrl() + "': " + ex.getMessage());
                     site.setAllParameters(Status.FAILED, new Date(), "Ошибка при индексации сайта '" + site.getUrl() + "': " + ex.getMessage());
                     siteService.saveSite(site);
                     ex.printStackTrace();
@@ -113,7 +113,7 @@ public class IndexingServiceImpl implements IndexingService {
                 parseSiteUtil.setSite(site);
                 new Thread(parseSiteUtil).start();
             } catch (Exception ex) {
-                log.warn("Ошибка при индексации сайта '" + site.getUrl() + "': " + ex.getMessage());
+                log.error("Ошибка при индексации сайта '" + site.getUrl() + "': " + ex.getMessage());
                 site.setAllParameters(Status.FAILED, new Date(), "Ошибка при индексации сайта '" + site.getUrl() + "': " + ex.getMessage());
                 siteService.saveSite(site);
                 ex.printStackTrace();

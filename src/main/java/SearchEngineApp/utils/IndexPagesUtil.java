@@ -17,16 +17,19 @@ public class IndexPagesUtil
     private static IndexService indexService;
     private static SiteService siteService;
     private static FieldService fieldService;
+    private static WebPageService pageService;
 
     public IndexPagesUtil (LemmaService lemmaService, IndexService indexService,
-                           SiteService siteService, FieldService fieldService) {
+                           SiteService siteService, FieldService fieldService, WebPageService pageService) {
         IndexPagesUtil.lemmaService = lemmaService;
         IndexPagesUtil.indexService = indexService;
         IndexPagesUtil.siteService = siteService;
         IndexPagesUtil.fieldService = fieldService;
+        IndexPagesUtil.pageService = pageService;
     }
 
-    public static synchronized void startIndexing(Site site, Collection<WebPage> webPageList) throws Exception {
+    public static synchronized void startIndexing(Site site) throws Exception {
+        List<WebPage> webPageList = pageService.getAllBySite(site.getId());
         if(fieldService.getSize() == 0) {
             writingField();
         }
@@ -58,7 +61,7 @@ public class IndexPagesUtil
             site.setAllParameters(Status.INDEXED, new Date(), null);
         }
         else {
-            log.warn("У сайта '" + site.getUrl() + "' нет страниц для индексации");
+            log.error("У сайта '" + site.getUrl() + "' нет страниц для индексации");
             throw new Exception("Нет страниц для индексации");
         }
         siteService.saveSite(site);
