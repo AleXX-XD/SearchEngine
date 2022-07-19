@@ -2,9 +2,7 @@ package SearchEngineApp.service.impl;
 
 import SearchEngineApp.repository.SiteRepository;
 import SearchEngineApp.models.Site;
-import SearchEngineApp.models.Status;
 import SearchEngineApp.service.SiteService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -1,10 +1,10 @@
 package SearchEngineApp.utils;
 
 import SearchEngineApp.models.*;
-import SearchEngineApp.service.FieldService;
 import SearchEngineApp.service.IndexService;
 import SearchEngineApp.service.LemmaService;
 import SearchEngineApp.service.SiteService;
+import SearchEngineApp.service.impl.IndexingServiceImpl;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.log4j.Logger;
@@ -49,32 +49,38 @@ public class IndexPageRunnable implements Runnable{
     @Override
     public void run() {
         try {
-            Site site = siteService.getSite(webPage.getSite().getUrl());
-            site.setStatusTime(new Date());
-            siteService.saveSite(site);
-            List<String> lemmaList = new ArrayList<>();
-            Document doc = Jsoup.parse(webPage.getContent());
-            for (Field field : fieldList) {
-                Elements el = doc.getElementsByTag(field.getSelector());
-                for (Map.Entry<String, Integer> entry : CreateLemmasUtil.createLemmasWithCount(el.eachText().get(0)).entrySet()) {
-                    if (!lemmaList.contains(entry.getKey())) {
-                        lemmaList.add(entry.getKey());
-                        Lemma lemma = new Lemma(entry.getKey(), 1, webPage.getSite());
-                        lemma = lemmaService.saveLemma(lemma);
-                        Index index = new Index(webPage.getId(),lemma.getId(), field.getWeight() * entry.getValue());
-                        indexService.saveIndex(index);
-                    } else {
-                        Lemma lemma = lemmaService.getLemma(entry.getKey(), webPage.getSite().getId());
-                        Index index = indexService.getIndex(lemma.getId(), webPage.getId());
-                        float rank = index.getRank();
-                        index.setRank(rank + entry.getValue() * field.getWeight());
-                        indexService.saveIndex(index);
+                Site site = siteService.getSite(webPage.getSite().getUrl());
+                site.setStatusTime(new Date());
+                siteService.saveSite(site);
+                List<String> lemmaList = new ArrayList<>();
+                Document doc = Jsoup.parse(webPage.getContent());
+                for (Field field : fieldList) {
+                    Elements el = doc.getElementsByTag(field.getSelector());
+                    for (Map.Entry<String, Integer> entry : CreateLemmasUtil.createLemmasWithCount(el.eachText().get(0)).entrySet()) {
+                        if(IndexingServiceImpl.isRun) {
+                            if (!lemmaList.contains(entry.getKey())) {
+                                lemmaList.add(entry.getKey());
+                                Lemma lemma = new Lemma(entry.getKey(), 1, webPage.getSite());
+                                lemma = lemmaService.saveLemma(lemma);
+                                Index index = new Index(webPage.getId(),lemma.getId(), field.getWeight() * entry.getValue());
+                                indexService.saveIndex(index);
+                            } else {
+                                Lemma lemma = lemmaService.getLemma(entry.getKey(), webPage.getSite().getId());
+                                Index index = indexService.getIndex(lemma.getId(), webPage.getId());
+                                float rank = index.getRank();
+                                index.setRank(rank + entry.getValue() * field.getWeight());
+                                indexService.saveIndex(index);
+                            }
+                        }
+                        else {
+                            throw new Exception("Процесс остановлен пользователем");
+                        }
                     }
                 }
-            }
+            lemmaList.clear();
         } catch (Exception iex) {
-            System.out.println("Exception - indexPage");
-            log.warn("Ошибка индексации страницы : '" + webPage.getSite().getUrl() + webPage.getPath() + "'. " + iex.getMessage());
+            log.warn("Ошибка при индексации страницы: '" + webPage.getSite().getUrl() + webPage.getPath() +
+                     "' : " + iex.getMessage());
             iex.printStackTrace();
         }
     }

@@ -10,7 +10,6 @@ import SearchEngineApp.service.SiteService;
 import SearchEngineApp.service.StatisticsService;
 import SearchEngineApp.service.WebPageService;
 import SearchEngineApp.service.response.Response;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +20,6 @@ public class StatisticsServiceImpl implements StatisticsService {
     private final SiteService siteService;
     private final WebPageService pageService;
     private final LemmaService lemmaService;
-    private final Logger logger = Logger.getLogger(StatisticsServiceImpl.class);
 
     public StatisticsServiceImpl (SiteService siteService, WebPageService pageService, LemmaService lemmaService) {
         this.siteService = siteService;

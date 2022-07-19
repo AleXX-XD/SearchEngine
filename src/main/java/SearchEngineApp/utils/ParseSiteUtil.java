@@ -53,22 +53,24 @@ public class ParseSiteUtil implements Runnable
     public void run() {
         try {
             allUrl = new CopyOnWriteArraySet<>();
-            pageData= new CopyOnWriteArraySet<>();
+            pageData = new CopyOnWriteArraySet<>();
             if (IndexingServiceImpl.isRun) {
+                log.info("НАЧАТА ИНДЕКСАЦИЯ сайта '" + site.getUrl() + "'");
                 long startTime = System.currentTimeMillis();
 
                 WebPage webPage = new WebPage("/", site);
 
                 mapOfSiteForkJoinPool(webPage);
+
+                allUrl.clear();
                 long parseTime = System.currentTimeMillis() - startTime;
 
                 if (IndexingServiceImpl.isRun) {
-                    for (WebPage page : pageData) {
-                        pageService.savePage(page);
-                    }
+                    pageService.saveAllPage(pageData);
                     long insertParseTime = System.currentTimeMillis() - startTime;
                     try {
-                        IndexPagesUtil.startIndexing(site);
+                        IndexPagesUtil.startIndexing(site, pageData);
+                        pageData.clear();
                     }
                     catch (Exception ex) {
                         throw ex;

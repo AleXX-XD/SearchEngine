@@ -3,7 +3,6 @@ package SearchEngineApp.service.impl;
 import SearchEngineApp.repository.FieldRepository;
 import SearchEngineApp.models.Field;
 import SearchEngineApp.service.FieldService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

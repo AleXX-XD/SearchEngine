@@ -6,6 +6,7 @@ import SearchEngineApp.service.WebPageService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 @Service
 public class WebPageServiceImpl implements WebPageService {
@@ -17,8 +18,8 @@ public class WebPageServiceImpl implements WebPageService {
     }
 
     @Override
-    public synchronized void savePage(WebPage page) {
-        pageRepository.save(page);
+    public synchronized void saveAllPage(CopyOnWriteArraySet<WebPage> pages) {
+        pageRepository.saveAll(pages);
     }
 
     @Override

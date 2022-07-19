@@ -13,11 +13,4 @@ public class Total
     private boolean isIndexing;
 
     public Total() {}
-
-    public Total(long sites, long pages, long lemmas, boolean isIndexing) {
-        this.sites = sites;
-        this.pages = pages;
-        this.lemmas = lemmas;
-        this.isIndexing = isIndexing;
-    }
 }

@@ -1,8 +1,6 @@
 package SearchEngineApp.service;
 
 import SearchEngineApp.models.Lemma;
-import SearchEngineApp.models.Site;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

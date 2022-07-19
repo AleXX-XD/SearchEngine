@@ -4,7 +4,6 @@ import SearchEngineApp.repository.IndexRepository;
 import SearchEngineApp.models.Index;
 import SearchEngineApp.models.Lemma;
 import SearchEngineApp.service.IndexService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

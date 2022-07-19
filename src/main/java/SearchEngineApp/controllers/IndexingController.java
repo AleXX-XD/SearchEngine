@@ -5,6 +5,7 @@ import SearchEngineApp.service.response.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class IndexingController
@@ -24,6 +25,12 @@ public class IndexingController
     @GetMapping(value = "/stopIndexing")
     public ResponseEntity<Object> stopIndexing() throws InterruptedException {
         Response response = indexingService.stopIndexing();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(value = "/indexPage")
+    public ResponseEntity<Object> indexPage(String url) {
+        Response response = indexingService.startSingleIndexing(url);
         return ResponseEntity.ok(response);
     }
 }

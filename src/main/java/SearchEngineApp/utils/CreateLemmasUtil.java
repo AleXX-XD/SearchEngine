@@ -6,10 +6,7 @@ import org.apache.lucene.morphology.english.EnglishLuceneMorphology;
 import org.apache.lucene.morphology.russian.RussianLuceneMorphology;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 public class CreateLemmasUtil
 {
@@ -19,8 +16,8 @@ public class CreateLemmasUtil
         LuceneMorphology luceneMorphRus= new RussianLuceneMorphology();
         LuceneMorphology luceneMorphEng= new EnglishLuceneMorphology();
         HashMap<String,Integer> lemmas = new HashMap<>();
+        text = text.toLowerCase(Locale.ROOT).replace('ё', 'е');
         String[] stringArray = text.split("[^а-яА-ЯёЁa-zA-Z]");
-
         for(String string : stringArray) {
             if (string.matches("[а-яА-ЯёЁ]+")) {
                 for (String word  : getLemmas(string, luceneMorphRus)) {
@@ -67,6 +64,7 @@ public class CreateLemmasUtil
         LuceneMorphology luceneMorphRus= new RussianLuceneMorphology();
         LuceneMorphology luceneMorphEng= new EnglishLuceneMorphology();
         List<List<String>> lemmasList = new ArrayList<>();
+        text = text.toLowerCase(Locale.ROOT).replace('ё', 'е');
         String[] stringArray = text.split("[^а-яА-ЯёЁa-zA-Z]");
         for(String string : stringArray) {
             List<String> list;

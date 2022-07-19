@@ -1,6 +1,8 @@
 ## Overview
 A search engine that searches for words and phrases on websites
 
+You need to create a database with encoding settings: Charset: utf8mb4, Collation: utf8mb4_bin
+
 ## Release Notes
 Can be found in [RELEASE_NOTES](RELEASE_NOTES.md).
 

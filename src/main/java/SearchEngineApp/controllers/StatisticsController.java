@@ -23,7 +23,7 @@ public class StatisticsController
     }
 
     @GetMapping(value = "/statistics")
-    public ResponseEntity statistic() throws IOException, ParseException {
+    public ResponseEntity<Object> statistic(){
         Response response = service.getStatistics();
         return ResponseEntity.ok().body(response);
     }

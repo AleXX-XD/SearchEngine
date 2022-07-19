@@ -5,7 +5,6 @@ import SearchEngineApp.models.Lemma;
 import SearchEngineApp.service.LemmaService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,8 +18,9 @@ public class LemmaServiceImpl implements LemmaService {
 
     @Override
     public synchronized Lemma saveLemma(Lemma lemma) {
-        if(getLemma(lemma.getLemma(), lemma.getSite().getId()) != null) {
-            lemma = getLemma(lemma.getLemma(), lemma.getSite().getId());
+        Lemma lemmaFromDB = getLemma(lemma.getLemma(), lemma.getSite().getId());
+        if(lemmaFromDB != null) {
+            lemma = lemmaFromDB;
             lemma.setFrequency(lemma.getFrequency() + 1);
         }
         lemmaRepository.save(lemma);
@@ -34,10 +34,7 @@ public class LemmaServiceImpl implements LemmaService {
 
     @Override
     public List<Lemma> getLemmas(List<String> nameList) {
-        List<Lemma> lemmaList = new ArrayList<>();
-        Iterable<Lemma> lemmas = lemmaRepository.findAllByLemmaIn(nameList);
-        lemmas.forEach(lemmaList::add);
-        return lemmaList;
+        return lemmaRepository.findAllByLemmaIn(nameList);
     }
 
     @Override

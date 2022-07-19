@@ -153,6 +153,7 @@ public class SearchTextUtil {
     }
 
     private static String getSnippet (String searchText, String mainText) throws IOException {
+        mainText = mainText.toLowerCase(Locale.ROOT).replace('ё', 'е');
         String[] textArray = mainText.split("(?!^)\\b");
         TreeMap<Integer,List<String>> lemmasIndexes = CreateLemmasUtil.getIndexLemmas(textArray);
         List<List<String>> lemmasFromText = CreateLemmasUtil.createLemmas(searchText);
