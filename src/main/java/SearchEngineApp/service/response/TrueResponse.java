@@ -11,4 +11,8 @@ public class TrueResponse implements Response
 {
     private final boolean result = true;
 
+    @Override
+    public boolean getResult() {
+        return result;
+    }
 }

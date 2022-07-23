@@ -11,6 +11,7 @@ public interface SiteService {
     Site getSite(String url);
     List<Site> getAllSites();
     long countStatusIndexing();
+    long countStatusFailed();
     List<Site> getAllIndexingSite();
 
 }

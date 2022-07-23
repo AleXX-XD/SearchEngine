@@ -1,5 +1,6 @@
 package SearchEngineApp.service.impl;
 
+import SearchEngineApp.models.Site;
 import SearchEngineApp.repository.LemmaRepository;
 import SearchEngineApp.models.Lemma;
 import SearchEngineApp.service.LemmaService;
@@ -35,6 +36,11 @@ public class LemmaServiceImpl implements LemmaService {
     @Override
     public List<Lemma> getLemmas(List<String> nameList) {
         return lemmaRepository.findAllByLemmaIn(nameList);
+    }
+
+    @Override
+    public List<Lemma> getLemmasFromSite(List<String> nameList, Site site) {
+        return lemmaRepository.findAllByLemmaInAndSite(nameList, site);
     }
 
     @Override

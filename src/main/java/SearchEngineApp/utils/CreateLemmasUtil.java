@@ -2,7 +2,9 @@ package SearchEngineApp.utils;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.morphology.LuceneMorphology;
+import org.apache.lucene.morphology.analyzer.MorphologyAnalyzer;
 import org.apache.lucene.morphology.english.EnglishLuceneMorphology;
+import org.apache.lucene.morphology.russian.RussianAnalyzer;
 import org.apache.lucene.morphology.russian.RussianLuceneMorphology;
 
 import java.io.IOException;

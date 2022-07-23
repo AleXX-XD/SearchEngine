@@ -3,6 +3,7 @@ package SearchEngineApp.service.impl;
 import SearchEngineApp.models.WebPage;
 import SearchEngineApp.repository.WebPageRepository;
 import SearchEngineApp.service.WebPageService;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
