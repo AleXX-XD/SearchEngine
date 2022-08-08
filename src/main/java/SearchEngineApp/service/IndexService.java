@@ -2,6 +2,7 @@ package SearchEngineApp.service;
 
 import SearchEngineApp.models.Index;
 import SearchEngineApp.models.Lemma;
+import SearchEngineApp.models.Site;
 
 import java.util.List;
 

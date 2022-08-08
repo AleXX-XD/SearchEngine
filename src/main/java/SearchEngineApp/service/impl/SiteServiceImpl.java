@@ -40,6 +40,12 @@ public class SiteServiceImpl implements SiteService
         return siteRepository.countByStatusIndexing();
     }
 
+    @Override
+    public long countStatusFailed() {
+        return siteRepository.countByStatusFailed();
+    }
+
+    @Override
     public List<Site> getAllIndexingSite() {
         return siteRepository.findAllByStatusIndexing();
     }

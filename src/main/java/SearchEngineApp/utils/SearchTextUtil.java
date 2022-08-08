@@ -1,12 +1,16 @@
 package SearchEngineApp.utils;
 
-import SearchEngineApp.models.Index;
-import SearchEngineApp.models.Lemma;
-import SearchEngineApp.models.SearchPage;
-import SearchEngineApp.models.WebPage;
+import SearchEngineApp.data.search.Data;
+import SearchEngineApp.data.search.SearchData;
+import SearchEngineApp.models.*;
 import SearchEngineApp.service.IndexService;
 import SearchEngineApp.service.LemmaService;
+import SearchEngineApp.service.SiteService;
 import SearchEngineApp.service.WebPageService;
+import SearchEngineApp.service.response.FalseResponse;
+import SearchEngineApp.service.response.Response;
+import SearchEngineApp.service.response.SearchResponse;
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
@@ -17,32 +21,48 @@ import java.util.*;
 @Component
 public class SearchTextUtil {
 
+    private static final Logger log = Logger.getLogger(SearchTextUtil.class);
     private static IndexService indexService;
     private static WebPageService webPageService;
     private static LemmaService lemmaService;
+    private static SiteService siteService;
 
-    public SearchTextUtil (IndexService indexService, WebPageService webPageService, LemmaService lemmaService) {
+    public SearchTextUtil (IndexService indexService, WebPageService webPageService, LemmaService lemmaService, SiteService siteService) {
         SearchTextUtil.indexService = indexService;
         SearchTextUtil.webPageService = webPageService;
         SearchTextUtil.lemmaService = lemmaService;
+        SearchTextUtil.siteService = siteService;
     }
 
-    public static void startSearch(String text) throws IOException {
+    public static Response startSearch(String text, Site site) throws IOException {
         long startTime = System.currentTimeMillis();
-        List<Lemma> lemmas = getLemmas(text);
-        List<Long> pages = getPages(lemmas);
-
-
-        List<SearchPage> searchPages = getSearchPages(lemmas, pages, text);
-
-        System.out.println("Найденные страницы (" + searchPages.size() + " стр.) : ");
-        for (SearchPage searchPage : searchPages) {
-            System.out.println("URL : " + searchPage.getWebPage().getPath() + "\n"
-                    + "Заголовок : " + searchPage.getTitle() + "\n"
-                    + "Фрагмент текста : " + searchPage.getSnippet() + "\n"
-                    + "Релевантность : " + searchPage.getRelevance() + "\n");
+        List<Lemma> lemmas = getLemmas(text, site);
+        if(lemmas == null) {
+            log.warn("Ошибка поиска. Некорректный запрос : '" + text + "'");
+            return new FalseResponse("Некорректный запрос");
+        } else {
+            List<Long> pages = getPages(lemmas);
+            if(pages.size() == 0) {
+                log.warn("Поиск по запросу : '" + text + "' не дал результатов");
+                return new FalseResponse("Поиск не дал результатов");
+            } else {
+                List<SearchPage> searchPages = getSearchPages(lemmas, pages, text);
+                List<Data> dataList = new ArrayList<>();
+                for(SearchPage searchPage : searchPages) {
+                    Data data = new Data();
+                    data.setSite(searchPage.getWebPage().getSite().getUrl());
+                    data.setSiteName(searchPage.getWebPage().getSite().getName());
+                    data.setUri(searchPage.getWebPage().getPath());
+                    data.setTitle(searchPage.getTitle());
+                    data.setSnippet(searchPage.getSnippet());
+                    data.setRelevance(searchPage.getRelevance());
+                    dataList.add(data);
+                }
+                log.info("Количество страниц по поисковому запросу '" + text + "' = " + searchPages.size() + " стр.\n" +
+                        "Затраченное время на поиск = " + (System.currentTimeMillis() - startTime) / 1000 + "сек.");
+                return new SearchResponse(searchPages.size(), dataList);
+            }
         }
-        System.out.println("Затраченное время на поиск = " + (System.currentTimeMillis() - startTime) / 1000 + "сек.");
     }
 
     private static List<SearchPage> getSearchPages (List<Lemma> searchLemmas, List<Long> searchPages, String searchText) throws IOException {
@@ -96,16 +116,21 @@ public class SearchTextUtil {
         return searchPagesSort;
     }
 
-    private static List<Lemma> getLemmas (String text) throws IOException {
+    private static List<Lemma> getLemmas (String text, Site site) throws IOException {
         List<Lemma> searchLemmas = new ArrayList<>();
         List<String> lemmaNames = new ArrayList<>();
+        List<Lemma> lemmaList;
 
         HashMap<String,Integer> map = CreateLemmasUtil.createLemmasWithCount(text);
         if(map.size() > 0) {
             for(Map.Entry<String, Integer> entry : map.entrySet()) {
                 lemmaNames.add(entry.getKey());
             }
-            List<Lemma> lemmaList = lemmaService.getLemmas(lemmaNames);
+            if(site == null) {
+                lemmaList = lemmaService.getLemmas(lemmaNames);
+            } else {
+                lemmaList = lemmaService.getLemmasFromSite(lemmaNames, site);
+            }
             for (Lemma lemma: lemmaList) {
                 if (lemma == null) {
                     searchLemmas = null;
@@ -133,8 +158,6 @@ public class SearchTextUtil {
 
     private static List<Long> getPages (List<Lemma> searchLemmas) {
         List<Long> searchPages = new ArrayList<>();
-
-        if (searchLemmas!=null) {
             for (Lemma lemma : searchLemmas) {
                 List<Long> pages = indexService.getPages(lemma.getId());
                 if (searchPages.isEmpty()) {
@@ -146,9 +169,6 @@ public class SearchTextUtil {
                     }
                 }
             }
-        } else {
-            System.out.println("Поиск не дал результатов!!!");
-        }
         return searchPages;
     }
 

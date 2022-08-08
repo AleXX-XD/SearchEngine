@@ -14,4 +14,8 @@ public class FalseResponse implements Response {
         this.error = error;
     }
 
+    @Override
+    public boolean getResult() {
+        return result;
+    }
 }

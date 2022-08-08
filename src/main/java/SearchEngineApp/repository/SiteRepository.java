@@ -15,4 +15,6 @@ public interface SiteRepository extends CrudRepository<Site,Long> {
     long countByStatusIndexing();
     @Query(value = "SELECT s FROM Site s WHERE s.status = 'INDEXING'")
     List<Site> findAllByStatusIndexing();
+    @Query(value = "SELECT count(s) FROM Site s WHERE s.status = 'FAILED'")
+    long countByStatusFailed();
 }

@@ -19,4 +19,8 @@ public class StatisticResponse implements Response
         this.statistics = statistics;
     }
 
+    @Override
+    public boolean getResult() {
+        return result;
+    }
 }

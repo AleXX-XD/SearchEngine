@@ -62,12 +62,12 @@ public class ParseSiteUtil implements Runnable
 
                 mapOfSiteForkJoinPool(webPage);
 
-                allUrl.clear();
+//                allUrl.clear();
                 long parseTime = System.currentTimeMillis() - startTime;
 
                 if (IndexingServiceImpl.isRun) {
                     pageService.saveAllPage(pageData);
-                    pageData.clear();
+//                    pageData.clear();
                     long insertParseTime = System.currentTimeMillis() - startTime;
                     try {
                         IndexPagesUtil.startIndexing(site);
